@@ -1,0 +1,75 @@
+<script>
+  const laneList = new Set([5, 6, 7, 8, 9, 10]);
+
+  const aSeedString = "이동엽|노유한|김형한|이준혁|이재웅+10|노진형+10"
+  const bSeedString = "강성구|김정현|설수진|배규문|김소연+10|고영훈+10"
+  const cSeedString = "장운재|정영민|강신욱|한기태|나성연+10|김자영+20"
+
+  const aSeed = aSeedString.split("|");
+  const bSeed = bSeedString.split("|");
+  const cSeed = cSeedString.split("|");
+
+  document.write("A시드: ");
+  for (const player of aSeed) {
+    document.write('<span style="color: #ba3c3c;">');
+    document.write(player + ", ");
+    document.write('</span>');
+  }
+  document.write("<br>");
+
+  document.write("B시드: ");
+  for (const player of bSeed) {
+    document.write('<span style="color: #3d3dc1;">');
+    document.write(player + ", ");
+    document.write('</span>');
+  }
+  document.write("<br>");
+
+  document.write("C시드: ");
+  for (const player of cSeed) {
+    document.write('<span style="color: #2c852c;">');
+    document.write(player + ", ");
+    document.write('</span>');
+  }
+  document.write("<br>");
+  document.write("<br>");
+  document.write("<br>");
+
+  shuffle(aSeed);
+  shuffle(bSeed);
+  shuffle(cSeed);
+
+  for (const lane of laneList) {
+    document.write(lane + "번 레인 -> ");
+    document.write('<span style="color: #ba3c3c;">');
+    document.write(aSeed.pop() + " , ");
+    document.write('</span>');
+    document.write('<span style="color: #3d3dc1;">');
+    document.write(bSeed.pop() + " , ");
+    document.write('</span>');
+    document.write('<span style="color: #2c852c;">');
+    document.write(cSeed.pop() + "<br>");
+    document.write('</span>');
+  }
+
+  function shuffle(array) {
+    array.sort(() => Math.random() - 0.5);
+  }
+</script>
+
+<footer class="footer">
+    Copyright © 2021 NY.KING. All rights reserved.
+</footer>
+
+<style>
+    footer {
+        align-content: center;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        height: 60px;
+        width: 100%;
+        background: grey;
+        color: white;
+    }
+</script>
