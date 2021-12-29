@@ -1,55 +1,80 @@
+<span style="font-size:20px;color:red">
+    <b>사용 가이드</b>: <br>레인의 수와 각 시드별 참가자의 수가 같아야 합니다.
+    <br> 결원이 있다면 "xxx"와 같이 표시해서 인원을 맞춰줍니다.
+    <br> 레인이나 사람 이름 사이의 구분자는 "|"를 씁니다.
+    <br>
+    <br>
+    <br>
+</span>
+<span style="font-size:15px;color:red">
+    <b>중요한 점1 -> 노유킹은 서버개발자라서 html이랑 css 잘못함, 그래서 디자인이 안이쁨</b><br>
+    <b>중요한 점2 -> 불만이면 쓰지마.</b>
+</span>
+
+<br>
+<br>
+<span style="font-size:20px;">
+    레인: <input id="lane-input" style="width:300px;height:30px;font-size:20px;" value="5 | 6 | 7 | 8 | 9 | 10">
+    <br>
+</span>
+<br>
+<span style="font-size:20px;">
+    <span style="color: #ba3c3c;">aSeed 인원: </span><input id="aseed-input"
+                                                          style="width:1000px;height:30px;font-size:20px;"
+                                                          value="이동엽 | 노유한 | 김형한 | 이준혁 | 이재웅+10 | 노진형+10">
+    <br>
+    <br>
+</span>
+<span style="font-size:20px;">
+    <span style="color: #3d3dc1;">bSeed 인원: </span><input id="bseed-input"
+                                                          style="width:1000px;height:30px;font-size:20px;"
+                                                          value="강성구 | 김정현 | 설수진 | 배규문 | 김소연+10 | 고영훈+10">
+    <br>
+    <br>
+</span>
+<span style="font-size:20px;">
+    <span style="color: #2c852c;">cSeed 인원: </span><input id="cseed-input"
+                                                          style="width:1000px;height:30px;font-size:20px;"
+                                                          value="장운재 | 정영민 | 강신욱 | 한기태 | XXX | XXX">
+    <br>
+    <br>
+</span>
+
+<br>
+
+<button style="width:200px;height:50px;font-size:20px;" onclick="execute()">레인 배정 실행</button>
+
+<br>
+<br>
+<br>
+<span style="font-size:20px;"><b>레인 배정 결과</b></span><br><br>
+
+<div id = "result-view"></div>
+
+
 <script>
-  const laneList = new Set([5, 6, 7, 8, 9, 10]);
+  function execute() {
+    const laneResultView = document.getElementById("result-view");
+    laneResultView.innerHTML = ''
 
-  const aSeedString = "이동엽|노유한|김형한|이준혁|이재웅+10|노진형+10"
-  const bSeedString = "강성구|김정현|설수진|배규문|김소연+10|고영훈+10"
-  const cSeedString = "장운재|정영민|강신욱|한기태|나성연+10|김자영+20"
+    const laneList = document.getElementById("lane-input").value.trim().split("|");
 
-  const aSeed = aSeedString.split("|");
-  const bSeed = bSeedString.split("|");
-  const cSeed = cSeedString.split("|");
+    const aSeed = document.getElementById("aseed-input").value.trim().split("|");
+    const bSeed = document.getElementById("bseed-input").value.trim().split("|");
+    const cSeed = document.getElementById("cseed-input").value.trim().split("|");
 
-  document.write("A시드: ");
-  for (const player of aSeed) {
-    document.write('<span style="color: #ba3c3c;">');
-    document.write(player + ", ");
-    document.write('</span>');
-  }
-  document.write("<br>");
+    shuffle(aSeed);
+    shuffle(bSeed);
+    shuffle(cSeed);
 
-  document.write("B시드: ");
-  for (const player of bSeed) {
-    document.write('<span style="color: #3d3dc1;">');
-    document.write(player + ", ");
-    document.write('</span>');
-  }
-  document.write("<br>");
 
-  document.write("C시드: ");
-  for (const player of cSeed) {
-    document.write('<span style="color: #2c852c;">');
-    document.write(player + ", ");
-    document.write('</span>');
-  }
-  document.write("<br>");
-  document.write("<br>");
-  document.write("<br>");
-
-  shuffle(aSeed);
-  shuffle(bSeed);
-  shuffle(cSeed);
-
-  for (const lane of laneList) {
-    document.write(lane + "번 레인 -> ");
-    document.write('<span style="color: #ba3c3c;">');
-    document.write(aSeed.pop() + " , ");
-    document.write('</span>');
-    document.write('<span style="color: #3d3dc1;">');
-    document.write(bSeed.pop() + " , ");
-    document.write('</span>');
-    document.write('<span style="color: #2c852c;">');
-    document.write(cSeed.pop() + "<br>");
-    document.write('</span>');
+    for (const lane of laneList) {
+      laneResultView.innerHTML += '<span style="font-size:20px;">' + lane + '번 레인 -> <b></span>'
+      laneResultView.innerHTML += '<span style="font-size:20px; color: #ba3c3c;">' +  aSeed.pop() + ' , </span>'
+      laneResultView.innerHTML += '<span style="font-size:20px; color: #3d3dc1;">' +  bSeed.pop() + ' , </span>'
+      laneResultView.innerHTML += '<span style="font-size:20px; color: #2c852c;">' +  cSeed.pop() + ' </span>'
+      laneResultView.innerHTML += '</span><br>'
+    }
   }
 
   function shuffle(array) {
@@ -72,4 +97,7 @@
         background: grey;
         color: white;
     }
-</script>
+
+    <
+    /
+    script >
