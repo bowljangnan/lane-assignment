@@ -2,7 +2,7 @@ version: v1.0.0 <br><br>
 <span style="font-size:20px;color:red">
     <b>사용 가이드</b>: <br>레인의 수와 각 시드별 참가자의 수가 같아야 합니다.
     <br> 결원이 있다면 "xxx"와 같이 표시해서 인원을 맞춰줍니다.
-    <br> 레인이나 사람 이름 사이의 구분자는 "|"를 씁니다.
+    <br> 레인이나 사람 이름 사이의 구분자는 슬래쉬("/")를 씁니다.
     <br>
     <br>
     <br>
@@ -15,28 +15,28 @@ version: v1.0.0 <br><br>
 <br>
 <br>
 <span style="font-size:20px;">
-    레인: <input id="lane-input" style="width:300px;height:30px;font-size:20px;" value="5 | 6 | 7 | 8 | 9 | 10">
+    레인: <input id="lane-input" style="width:300px;height:30px;font-size:20px;" value="5 / 6 / 7 / 8 / 9 / 10">
     <br>
 </span>
 <br>
 <span style="font-size:20px;">
     <span style="color: #ba3c3c;">aSeed 인원: </span><input id="aseed-input"
                                                           style="width:1000px;height:30px;font-size:20px;"
-                                                          value="이동엽 | 노유한 | 김형한 | 이준혁 | 이재웅+10 | 노진형+10">
+                                                          value="이동엽 / 노유한 / 김형한 / 이준혁 / 이재웅+10 / 노진형+10">
     <br>
     <br>
 </span>
 <span style="font-size:20px;">
     <span style="color: #3d3dc1;">bSeed 인원: </span><input id="bseed-input"
                                                           style="width:1000px;height:30px;font-size:20px;"
-                                                          value="강성구 | 김정현 | 설수진 | 배규문 | 김소연+10 | 고영훈+10">
+                                                          value="강성구 / 김정현 / 설수진 / 배규문 / 김소연+10 / 고영훈+10">
     <br>
     <br>
 </span>
 <span style="font-size:20px;">
     <span style="color: #2c852c;">cSeed 인원: </span><input id="cseed-input"
                                                           style="width:1000px;height:30px;font-size:20px;"
-                                                          value="장운재 | 정영민 | 강신욱 | 한기태 | XXX | XXX">
+                                                          value="장운재 / 정영민 / 강신욱 / 한기태 / XXX / XXX">
     <br>
     <br>
 </span>
@@ -58,11 +58,11 @@ version: v1.0.0 <br><br>
     const laneResultView = document.getElementById("result-view");
     laneResultView.innerHTML = ''
 
-    const laneList = document.getElementById("lane-input").value.trim().split("|");
+    const laneList = document.getElementById("lane-input").value.trim().split("/");
 
-    const aSeed = document.getElementById("aseed-input").value.trim().split("|");
-    const bSeed = document.getElementById("bseed-input").value.trim().split("|");
-    const cSeed = document.getElementById("cseed-input").value.trim().split("|");
+    const aSeed = document.getElementById("aseed-input").value.trim().split("/");
+    const bSeed = document.getElementById("bseed-input").value.trim().split("/");
+    const cSeed = document.getElementById("cseed-input").value.trim().split("/");
 
     shuffle(aSeed);
     shuffle(bSeed);
