@@ -1,0 +1,134 @@
+version: v1.0.0 <br><br>
+<title>볼장난 팀 나누기</title>
+
+<span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
+<span style="font-size:15px;color:red"><b>* 버튼을 누르면 참가자 목록에 추가됩니다</b></span><br><br>
+<div id="member-div">
+
+</div>
+<br><br><br>
+
+<span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span" style="font-size:20px;color:red">0</span>명 - </b></span><br><br>
+<div id="participant-div">
+
+</div>
+<br>
+<br>
+<span style="font-size:20px;"><b> ---------------------------------------------------------- </b></span><br>
+<div>
+    <span style="width:200px;height:50px;font-size:20px;">
+        <select style="width:50px;height:30px;font-size:20px;">
+            <option selected>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+        </select> 개 팀 으로 나누기
+    </span> <br>
+    <button style="width:200px;height:50px;font-size:20px;" onclick="divideTeam()">팀 나누기</button>
+</div>
+
+<br>
+<div id="divide-team-div">
+</div>
+
+<script>
+  window.onload = initialize()
+
+  const memberList = []
+  const participantMap = new Map();
+
+  function initialize() {
+    initializeMember();
+  }
+
+  function initializeMember() {
+    const url = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+
+    fetch(url, null)
+      .then((response) => response.json())
+      .then((data) => initializeMemberMap(data["values"]))
+      .catch((error) => console.log("error:", error));
+  }
+
+  function initializeMemberMap(values) {
+    for (let index = 0; index < values.length; index++) {
+      memberList.push({ "id": index, "name" : values[index][0], "score" : values[index][1] })
+    }
+    initializeMemberView()
+  }
+
+  function initializeMemberView() {
+    const memberDiv = document.getElementById("member-div");
+
+    let index = 0
+    for (const member of memberList) {
+      memberDiv.innerHTML += getMemberButtonString(member)
+      if ((index+1) % 5 === 0) {
+        console.log('new line' + (index % 5))
+        memberDiv.innerHTML+= '<br>'
+      }
+      index++
+    }
+  }
+
+  function getMemberButtonString(member) {
+    return '<button id=' + member.id + ' style="font-size:15px;" onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button>'
+  }
+
+  function getMemberNameString(member) {
+    return member.name + '(' + member.score + ')';
+  }
+
+  function participateMember(memberId) {
+    participantMap.set(memberId, memberList[memberId])
+    updateParticipantView()
+  }
+
+  function updateParticipantView() {
+    const participantDiv = document.getElementById("participant-div");
+    const participantCountDiv = document.getElementById("participant-count-span");
+
+    participantDiv.innerHTML = ''
+
+    let index = 0
+    let keys = Array.from( participantMap.keys() ).sort();
+
+    participantCountDiv.innerText = '' + keys.length
+
+    for (const key of keys) {
+      const participant = participantMap.get(key)
+
+      participantDiv.innerHTML += getMemberButtonString(participant)
+      if ((index+1) % 5 === 0) {
+        console.log('new line' + (index % 5))
+        participantDiv.innerHTML+= '<br>'
+      }
+      index++
+    }
+  }
+
+  function divideTeam() {
+    alert('노유킹 말씀: 오늘은 여기까지만 만들었습니다. 기대해주세요 :)')
+  }
+</script>
+
+<footer class="footer">
+    Copyright © 2022 NY.KING. All rights reserved.
+</footer>
+
+<style>
+    footer {
+        align-content: center;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        height: 60px;
+        width: 100%;
+        background: grey;
+        color: white;
+    }
+</style>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
