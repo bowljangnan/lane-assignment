@@ -67,7 +67,6 @@ version: v1.0.0 <br><br>
     for (const member of memberList) {
       memberDiv.innerHTML += getMemberButtonString(member)
       if ((index+1) % 5 === 0) {
-        console.log('new line' + (index % 5))
         memberDiv.innerHTML+= '<br>'
       }
       index++
@@ -103,7 +102,6 @@ version: v1.0.0 <br><br>
 
       participantDiv.innerHTML += getMemberButtonString(participant)
       if ((index+1) % 5 === 0) {
-        console.log('new line' + (index % 5))
         participantDiv.innerHTML+= '<br>'
       }
       index++
