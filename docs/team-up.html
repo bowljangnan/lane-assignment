@@ -73,7 +73,8 @@ version: v1.0.1 <br><br>
 
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
-      memberList.push({ "id": index, "name" : values[index][0], "score" : parseInt(values[index][1]), "handicap": 0 })
+      let name = values[index][0] === "노유한" ? "노유👑" :  values[index][0]
+      memberList.push({ "id": index, "name" : name, "score" : parseInt(values[index][1]), "handicap": 0 })
     }
     initializeMemberView()
   }
