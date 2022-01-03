@@ -53,7 +53,6 @@ version: v1.0.1 <br><br>
 <script>
   window.onload = initialize()
 
-  const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
   const memberList = []
   let groups = []
   const participantMap = new Map();
@@ -65,6 +64,7 @@ version: v1.0.1 <br><br>
 
   function initializeMember() {
 
+    const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
     fetch(spreadSheetUrl, null)
       .then((response) => response.json())
