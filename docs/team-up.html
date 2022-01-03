@@ -91,11 +91,11 @@ version: v1.0.0 <br><br>
   }
 
   function getMemberButtonString(member) {
-    return '<span style="padding: 10px;"><button id=' + member.id + ' onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
+    return '<span style="padding: 5px;"><button id=' + member.id + ' onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
   }
 
   function getParticipateButtonString(member) {
-    return '<span style="padding: 10px;"><button id=' + member.id + ' onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
+    return '<span style="padding: 5px;"><button id=' + member.id + ' onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
@@ -304,9 +304,9 @@ version: v1.0.0 <br><br>
 
 <style>
     button {
-        width:100px;
+        width:110px;
         height:30px;
-        font-size:15px;
+        font-size:12px;
     }
     footer {
         align-content: center;
