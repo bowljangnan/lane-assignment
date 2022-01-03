@@ -8,7 +8,7 @@ version: v1.0.0 <br><br>
 </div>
 <br><br><br>
 
-<span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span" style="font-size:20px;color:red">0</span>명 - </b></span><br><br>
+<span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span" style="font-size:20px;color:red">0</span>명 - </b></span><br>
 <span style="font-size:15px;color:red"><b>* 버튼을 누르면 참가자 목록에 제거됩니다</b></span><br><br>
 <div id="participant-div">
 
@@ -45,7 +45,7 @@ version: v1.0.0 <br><br>
 <span style="font-size:20px;"><b> - 팀 배정 - </b></span><br><br>
 <div id="team-div">
     <table id="team-table">
-        <thead><td></td> <td>팀 합산</td> <td>팀원</td> <td>추천핸디</td></thead>
+        <thead><td></td> <td>팀 합산</td> <td>팀원</td> <td>추천핸디 <button onclick="guideRecommendHandicapScore()">추천 핸디란?</button></td></thead>
     </table>
 
 </div>
@@ -55,6 +55,7 @@ version: v1.0.0 <br><br>
   const memberList = []
   let groups = []
   const participantMap = new Map();
+  const topSeedScore = 180
 
   function initialize() {
     initializeMember();
@@ -71,7 +72,7 @@ version: v1.0.0 <br><br>
 
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
-      memberList.push({ "id": index, "name" : values[index][0], "score" : parseInt(values[index][1]) })
+      memberList.push({ "id": index, "name" : values[index][0], "score" : parseInt(values[index][1]), "handicap": 0 })
     }
     initializeMemberView()
   }
@@ -82,19 +83,19 @@ version: v1.0.0 <br><br>
     let index = 0
     for (const member of memberList) {
       memberDiv.innerHTML += getMemberButtonString(member)
-      if ((index+1) % 5 === 0) {
-        memberDiv.innerHTML+= '<br>'
+      if ((index+1) % 10 === 0) {
+        memberDiv.innerHTML+= '<br><br>'
       }
       index++
     }
   }
 
   function getMemberButtonString(member) {
-    return '<button id=' + member.id + ' style="font-size:15px;" onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button>'
+    return '<span style="padding: 10px;"><button id=' + member.id + ' onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
   }
 
   function getParticipateButtonString(member) {
-    return '<button id=' + member.id + ' style="font-size:15px;" onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button>'
+    return '<span style="padding: 10px;"><button id=' + member.id + ' onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
@@ -118,9 +119,7 @@ version: v1.0.0 <br><br>
     participantDiv.innerHTML = ''
 
     let index = 0
-    let keys = Array.from( participantMap.keys() ).sort(function (a, b) {
-      return a - b;
-    });
+    let keys = getKeys()
 
     participantCountDiv.innerText = '' + keys.length
 
@@ -128,7 +127,7 @@ version: v1.0.0 <br><br>
       const participant = participantMap.get(key)
 
       participantDiv.innerHTML += getParticipateButtonString(participant)
-      if ((index+1) % 5 === 0) {
+      if ((index+1) % 10 === 0) {
         participantDiv.innerHTML+= '<br>'
       }
       index++
@@ -138,13 +137,11 @@ version: v1.0.0 <br><br>
   function divideTeam() {
     const teamCountSelect = document.getElementById('team-count-select');
     const teamCount = parseInt(teamCountSelect.options[teamCountSelect.selectedIndex].value);
-    divideGroup(teamCount).then(() => {
-      divideRandomTeam(teamCount)
-    })
+    divideGroupAndTeam(teamCount)
   }
 
-  function divideGroup(teamCount) {
-    let keys = Array.from( participantMap.keys() ).sort();
+  function divideGroupAndTeam(teamCount) {
+    let keys = getKeys()
     groups = []
 
     for (let keyIndex = 0; keyIndex < keys.length; keyIndex += teamCount) {
@@ -156,22 +153,59 @@ version: v1.0.0 <br><br>
         }
         group.push(participant)
       }
-      groups.push(group)
+
+      calculateHandicap(group)
+        .then(() => groups.push(group))
+        .then(() => {
+          const groupDiv = document.getElementById("group-div");
+          groupDiv.innerHTML = ''
+
+          let groupIndex = 1
+          for (const group of groups) {
+            groupDiv.innerHTML += groupIndex++ + ' 시드: '
+            for (const participant of group) {
+              groupDiv.innerHTML += participant.name + ' '
+            }
+            groupDiv.innerHTML += '<br>'
+          }
+        })
+        .then(() => divideRandomTeam(teamCount))
+    }
+  }
+
+  function calculateHandicap(group) {
+    // 핸디 조정
+
+    if (isAllTopSeedMember(group)) {
+      return new Promise(function(resolve) { resolve() });
     }
 
-    const groupDiv = document.getElementById("group-div");
-    groupDiv.innerHTML = ''
+    const averageOfGroup = sumOfTeamScore(group) / group.length
 
-    let groupIndex = 1
-    for (const group of groups) {
-      groupDiv.innerHTML += groupIndex++ + ' 시드: '
-      for (const participant of group) {
-        groupDiv.innerHTML += participant.name + ' '
+    for (let participant of group) {
+      if (participant.score >= topSeedScore) {
+        continue;
       }
-      groupDiv.innerHTML += '<br>'
+
+      const diff = participant.score - averageOfGroup
+      let handicap = 0
+      if (Math.abs(diff) > 10) {
+        handicap = Math.round(diff / 10) * 10 * -1
+      }
+
+      participant.handicap = handicap
     }
 
     return new Promise(function(resolve) { resolve() });
+  }
+
+  function isAllTopSeedMember(group) {
+    for (let participant of group) {
+      if (participant.score < topSeedScore) {
+        return false;
+      }
+    }
+    return true;
   }
 
   function divideRandomTeam(teamCount) {
@@ -206,11 +240,21 @@ version: v1.0.0 <br><br>
       newRow.insertCell(1).innerHTML = sumOfTeamScore(team) + '점'
       const participantCell = newRow.insertCell(2)
       for (const participant of team) {
-        participantCell.innerHTML += participant.name + ' '
+        participantCell.innerHTML += participant.name + '(' + participant.handicap + ') '
       }
-      newRow.insertCell(3)
+      newRow.insertCell(3).innerHTML = sumOfHandicap(team) + '점'
+
       teamIndex++
     }
+  }
+
+  function sumOfHandicap(team) {
+    let sum = 0;
+    for (const participant of team) {
+      sum += participant.handicap
+    }
+
+    return sum;
   }
 
   function sumOfTeamScore(team) {
@@ -219,6 +263,22 @@ version: v1.0.0 <br><br>
       sumOfScore += participant.score;
     }
     return sumOfScore;
+  }
+
+  function getKeys() {
+    return Array.from( participantMap.keys() ).sort(function (a, b) {
+      return a - b;
+    });
+  }
+
+  function guideRecommendHandicapScore() {
+    let guideString = '단순 에버리지 합산 차이에 의한 핸디캡이 아닌, \n'
+    guideString += '현실적인 요소를 반영한 핸디캡 점수입니다. \n'
+    guideString += '향후에 로직이 추가될 수 있습니다. \n\n'
+    guideString += '1. 에버리지: ' + topSeedScore + '이상의 멤버는 핸디 점수를 부여하지 않습니다. (항상 0)\n'
+    guideString += '2. 각 시드 내 평균 점수와의 차이로 핸디캡 점수가 결정됩니다.\n'
+    guideString += '3. 핸디캡 점수는 1의 자리에서 반올립 됩니다 (-15점 -> -20점, 7점 -> +10점)\n'
+    alert(guideString)
   }
 
   function shuffle(array) {
@@ -231,6 +291,11 @@ version: v1.0.0 <br><br>
 </footer>
 
 <style>
+    button {
+        width:100px;
+        height:30px;
+        font-size:15px;
+    }
     footer {
         align-content: center;
         position: fixed;
