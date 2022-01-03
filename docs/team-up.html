@@ -53,6 +53,7 @@ version: v1.0.1 <br><br>
 <script>
   window.onload = initialize()
 
+  const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
   const memberList = []
   let groups = []
   const participantMap = new Map();
@@ -63,9 +64,9 @@ version: v1.0.1 <br><br>
   }
 
   function initializeMember() {
-    const url = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
-    fetch(url, null)
+
+    fetch(spreadSheetUrl, null)
       .then((response) => response.json())
       .then((data) => initializeMemberMap(data["values"]))
       .catch((error) => console.log("error:", error));
@@ -73,10 +74,14 @@ version: v1.0.1 <br><br>
 
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
-      let name = values[index][0] === "노유한" ? "노유👑" :  values[index][0]
+      let name = getNohyooKingValue(values[index][0])
       memberList.push({ "id": index, "name" : name, "score" : parseInt(values[index][1]), "handicap": 0 })
     }
     initializeMemberView()
+  }
+
+  function getNohyooKingValue(name) {
+    return name === "노유한" ? "노유👑" :  name
   }
 
   function initializeMemberView() {
@@ -169,15 +174,23 @@ version: v1.0.1 <br><br>
 
           let groupIndex = 1
           for (const group of groups) {
-            groupDiv.innerHTML += groupIndex++ + ' 시드: '
-            for (const participant of group) {
-              groupDiv.innerHTML += participant.name + ' '
-            }
-            groupDiv.innerHTML += '<br>'
+            groupDiv.innerHTML += getSeedString(groupIndex, group)
+            groupIndex++
           }
         })
         .then(() => divideRandomTeam(teamCount))
     }
+  }
+
+  function getSeedString(seedNumber, group) {
+    let str = ''
+    str += seedNumber++ + ' 시드: '
+    for (const participant of group) {
+      str += participant.name + ' '
+    }
+    str += '<br>'
+
+    return str
   }
 
   function calculateHandicap(group) {
