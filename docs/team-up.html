@@ -1,4 +1,4 @@
-version: v1.0.0 <br><br>
+version: v1.0.1 <br><br>
 <title>볼장난 팀 나누기</title>
 
 <span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
@@ -10,6 +10,7 @@ version: v1.0.0 <br><br>
 
 <span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span" style="font-size:20px;color:red">0</span>명 - </b></span><br>
 <span style="font-size:15px;color:red"><b>* 버튼을 누르면 참가자 목록에 제거됩니다</b></span><br><br>
+<button style="width:200px;height:50px;font-size:20px;" onclick="clearParticipant()">참여 인원 전체 삭제</button><br><br>
 <div id="participant-div">
 
 </div>
@@ -109,6 +110,11 @@ version: v1.0.0 <br><br>
 
   function removeParticipateMember(memberId) {
     participantMap.delete(parseInt(memberId))
+    updateParticipantView()
+  }
+
+  function clearParticipant() {
+    participantMap.clear();
     updateParticipantView()
   }
 
