@@ -9,6 +9,7 @@ version: v1.0.0 <br><br>
 <br><br><br>
 
 <span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span" style="font-size:20px;color:red">0</span>명 - </b></span><br><br>
+<span style="font-size:15px;color:red"><b>* 버튼을 누르면 참가자 목록에 제거됩니다</b></span><br><br>
 <div id="participant-div">
 
 </div>
@@ -17,7 +18,7 @@ version: v1.0.0 <br><br>
 <span style="font-size:20px;"><b> ---------------------------------------------------------- </b></span><br>
 <div>
     <span style="width:200px;height:50px;font-size:20px;">
-        <select style="width:50px;height:30px;font-size:20px;">
+        <select id="team-count-select" style="width:100px;height:50px;font-size:25px;align-content: center">
             <option selected>2</option>
             <option>3</option>
             <option>4</option>
@@ -31,13 +32,28 @@ version: v1.0.0 <br><br>
 </div>
 
 <br>
-<div id="divide-team-div">
+<div id="divide-team-div" style="font-size:15px">
 </div>
 
+<br><br>
+<span style="font-size:20px;"><b> - 시드 배정 - </b></span><br><br>
+<div id="group-div">
+
+</div>
+
+<br><br>
+<span style="font-size:20px;"><b> - 팀 배정 - </b></span><br><br>
+<div id="team-div">
+    <table id="team-table">
+        <thead><td></td> <td>팀 합산</td> <td>팀원</td> <td>추천핸디</td></thead>
+    </table>
+
+</div>
 <script>
   window.onload = initialize()
 
   const memberList = []
+  let groups = []
   const participantMap = new Map();
 
   function initialize() {
@@ -55,7 +71,7 @@ version: v1.0.0 <br><br>
 
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
-      memberList.push({ "id": index, "name" : values[index][0], "score" : values[index][1] })
+      memberList.push({ "id": index, "name" : values[index][0], "score" : parseInt(values[index][1]) })
     }
     initializeMemberView()
   }
@@ -77,12 +93,21 @@ version: v1.0.0 <br><br>
     return '<button id=' + member.id + ' style="font-size:15px;" onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button>'
   }
 
+  function getParticipateButtonString(member) {
+    return '<button id=' + member.id + ' style="font-size:15px;" onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button>'
+  }
+
   function getMemberNameString(member) {
     return member.name + '(' + member.score + ')';
   }
 
   function participateMember(memberId) {
-    participantMap.set(memberId, memberList[memberId])
+    participantMap.set(parseInt(memberId), memberList[memberId])
+    updateParticipantView()
+  }
+
+  function removeParticipateMember(memberId) {
+    participantMap.delete(parseInt(memberId))
     updateParticipantView()
   }
 
@@ -93,14 +118,16 @@ version: v1.0.0 <br><br>
     participantDiv.innerHTML = ''
 
     let index = 0
-    let keys = Array.from( participantMap.keys() ).sort();
+    let keys = Array.from( participantMap.keys() ).sort(function (a, b) {
+      return a - b;
+    });
 
     participantCountDiv.innerText = '' + keys.length
 
     for (const key of keys) {
       const participant = participantMap.get(key)
 
-      participantDiv.innerHTML += getMemberButtonString(participant)
+      participantDiv.innerHTML += getParticipateButtonString(participant)
       if ((index+1) % 5 === 0) {
         participantDiv.innerHTML+= '<br>'
       }
@@ -109,7 +136,93 @@ version: v1.0.0 <br><br>
   }
 
   function divideTeam() {
-    alert('노유킹 말씀: 오늘은 여기까지만 만들었습니다. 기대해주세요 :)')
+    const teamCountSelect = document.getElementById('team-count-select');
+    const teamCount = parseInt(teamCountSelect.options[teamCountSelect.selectedIndex].value);
+    divideGroup(teamCount).then(() => {
+      divideRandomTeam(teamCount)
+    })
+  }
+
+  function divideGroup(teamCount) {
+    let keys = Array.from( participantMap.keys() ).sort();
+    groups = []
+
+    for (let keyIndex = 0; keyIndex < keys.length; keyIndex += teamCount) {
+      let group = []
+      for (let groupCount = 1; groupCount <= teamCount; groupCount++) {
+        const participant = participantMap.get(keys[keyIndex+groupCount-1])
+        if (participant === undefined) {
+          break
+        }
+        group.push(participant)
+      }
+      groups.push(group)
+    }
+
+    const groupDiv = document.getElementById("group-div");
+    groupDiv.innerHTML = ''
+
+    let groupIndex = 1
+    for (const group of groups) {
+      groupDiv.innerHTML += groupIndex++ + ' 시드: '
+      for (const participant of group) {
+        groupDiv.innerHTML += participant.name + ' '
+      }
+      groupDiv.innerHTML += '<br>'
+    }
+
+    return new Promise(function(resolve) { resolve() });
+  }
+
+  function divideRandomTeam(teamCount) {
+    let teams = []
+
+    for (const group of groups) {
+      shuffle(group);
+    }
+
+    for (let count = 0; count < teamCount; count++) {
+      let team = []
+      for (const group of groups) {
+        const participant = group[count]
+        if (participant === undefined) {
+          continue;
+        }
+        team.push(participant)
+      }
+      teams.push(team)
+    }
+
+    const teamTable = document.getElementById("team-table");
+    const totalRow = teamTable.getElementsByTagName("tr").length
+    for (let index = 1; index < totalRow; index++) {
+      teamTable.deleteRow(1)
+    }
+
+    let teamIndex = 1
+    for (const team of teams) {
+      const newRow = teamTable.insertRow(teamIndex)
+      newRow.insertCell(0).innerHTML = teamIndex + '팀'
+      newRow.insertCell(1).innerHTML = sumOfTeamScore(team) + '점'
+      const participantCell = newRow.insertCell(2)
+      for (const participant of team) {
+        participantCell.innerHTML += participant.name + ' '
+      }
+      newRow.insertCell(3)
+      teamIndex++
+    }
+  }
+
+  function sumOfTeamScore(team) {
+    let sumOfScore = 0;
+    for (const participant of team) {
+      sumOfScore += participant.score;
+    }
+    return sumOfScore;
+  }
+
+  function shuffle(array) {
+    array.sort(() => Math.random() - 0.5);
   }
 </script>
 
@@ -127,6 +240,11 @@ version: v1.0.0 <br><br>
         width: 100%;
         background: grey;
         color: white;
+    }
+    table, th, td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
     }
 </style>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
