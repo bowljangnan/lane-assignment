@@ -2,7 +2,8 @@ version: v1.0.0 <br><br>
 <title>볼장난 주간 기록 통계 조회</title>
 
 <span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
-<span style="font-size:15px;color:red"><b>* 버튼을 누르면 주간 개인 기록을 조회할 수 있습니다.</b></span><br><br>
+<span style="font-size:15px;color:red"><b>* 버튼을 누르면 주간 개인 기록을 조회할 수 있습니다.</b></span><br>
+<span style="font-size:15px;color:red"><b>* 올해 게임 기록이 없다면 버튼이 비활성화 됩니다.</b></span><br><br>
 <div id="member-div">
 
 </div>
@@ -40,7 +41,7 @@ version: v1.0.0 <br><br>
       .then((response) => response.json())
       .then((data) => initializeMemberMap(data["values"]))
       .then(() => initializeMemberStatistics())
-      .catch((error) => console.log("error:", error));
+      .catch((error) => console.log("error:", error))
   }
 
   function initializeMemberMap(values) {
@@ -64,12 +65,25 @@ version: v1.0.0 <br><br>
     }
   }
 
-  function initializeMemberStatistics() {
+  function initializeMemberStatistics(callback) {
 
     const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
     fetch(spreadSheetMetaUrl, null)
       .then((response) => response.json())
       .then((data) => initializeWeeklyRecords(data["sheets"]))
+
+    setTimeout(() => disableUnrecordUserButton(), 1000)
+
+    return new Promise(function(resolve) { resolve() });
+  }
+
+  function disableUnrecordUserButton() {
+    for (const memberName of memberList) {
+      const userMap = memberStatistics.get(memberName.name)
+      if (userMap === undefined || userMap.size === 0) {
+        document.getElementById(memberName.name).disabled = true;
+      }
+    }
   }
 
   function initializeWeeklyRecords(weeklySheets) {
@@ -84,8 +98,7 @@ version: v1.0.0 <br><br>
         .catch((error) => console.log("error:", error));
     }
 
-
-    console.log(memberStatistics)
+    return new Promise(function(resolve) { resolve() });
   }
 
   function initializeMemberStatisticsMap(weeklyKey, values) {
@@ -123,7 +136,6 @@ version: v1.0.0 <br><br>
   }
 
   function showStatistics(name) {
-    console.log(memberStatistics.get(name))
     const nameSpan = document.getElementById("name-span");
     nameSpan.innerHTML = name
 
