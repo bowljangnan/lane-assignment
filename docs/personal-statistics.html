@@ -80,8 +80,8 @@ version: v1.0.0 <br><br>
   function disableUnrecordUserButton() {
     for (const memberName of memberList) {
       const userMap = memberStatistics.get(memberName.name)
-      if (userMap === undefined || userMap.size === 0) {
-        document.getElementById(memberName.name).disabled = true;
+      if (userMap !== undefined && userMap.size !== 0) {
+        document.getElementById(memberName.name).disabled = false;
       }
     }
   }
@@ -128,7 +128,7 @@ version: v1.0.0 <br><br>
   }
 
   function getMemberButtonString(member) {
-    return '<span style="padding: 5px;"><button id=' + member.name + ' onclick="showStatistics(this.id)">' + getMemberNameString(member) + '</button></span>'
+    return '<span style="padding: 5px;"><button id=' + member.name + ' onclick="showStatistics(this.id)" disabled>' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
