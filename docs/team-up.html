@@ -27,8 +27,8 @@ version: v1.0.0 <br><br>
             <option>7</option>
             <option>8</option>
         </select> 개 팀 으로 나누기
-    </span> <br>
-    <button style="width:200px;height:50px;font-size:20px;" onclick="divideTeam()">팀 나누기</button>
+    </span> <br><br>
+    <button style="width:200px;height:50px;font-size:20px;" onclick="divideTeam()">팀 나누기 실행</button>
 </div>
 
 <br>
@@ -128,7 +128,7 @@ version: v1.0.0 <br><br>
 
       participantDiv.innerHTML += getParticipateButtonString(participant)
       if ((index+1) % 10 === 0) {
-        participantDiv.innerHTML+= '<br>'
+        participantDiv.innerHTML+= '<br><br>'
       }
       index++
     }
@@ -217,10 +217,13 @@ version: v1.0.0 <br><br>
 
     for (let count = 0; count < teamCount; count++) {
       let team = []
+
       for (const group of groups) {
-        const participant = group[count]
+        const averageOfGroup = Math.round((sumOfTeamScore(group) / group.length) / 10) * 10;
+
+        let participant = group[count]
         if (participant === undefined) {
-          continue;
+          participant = { "name" : "가상유저", "score" : 0, "handicap": averageOfGroup }
         }
         team.push(participant)
       }
@@ -240,11 +243,19 @@ version: v1.0.0 <br><br>
       newRow.insertCell(1).innerHTML = sumOfTeamScore(team) + '점'
       const participantCell = newRow.insertCell(2)
       for (const participant of team) {
-        participantCell.innerHTML += participant.name + '(' + participant.handicap + ') '
+        participantCell.innerHTML += participant.name + '(' + getHandicapScoreString(participant.handicap) + ') '
       }
-      newRow.insertCell(3).innerHTML = sumOfHandicap(team) + '점'
+      newRow.insertCell(3).innerHTML = getHandicapScoreString(sumOfHandicap(team)) + '점'
 
       teamIndex++
+    }
+  }
+
+  function getHandicapScoreString(score) {
+    if (score > 0) {
+      return '+' +  score
+    } else {
+      return '' +  score
     }
   }
 
@@ -278,6 +289,7 @@ version: v1.0.0 <br><br>
     guideString += '1. 에버리지: ' + topSeedScore + '이상의 멤버는 핸디 점수를 부여하지 않습니다. (항상 0)\n'
     guideString += '2. 각 시드 내 평균 점수와의 차이로 핸디캡 점수가 결정됩니다.\n'
     guideString += '3. 핸디캡 점수는 1의 자리에서 반올립 됩니다 (-15점 -> -20점, 7점 -> +10점)\n'
+    guideString += '4. 팀에 부족한 인원은 가상유저로 채워집니다 (그룹 내 에버리지의 반올림을 핸디로 적용)\n'
     alert(guideString)
   }
 
