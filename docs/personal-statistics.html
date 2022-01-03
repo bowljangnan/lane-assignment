@@ -1,0 +1,209 @@
+version: v1.0.0 <br><br>
+<title>볼장난 주간 기록 통계 조회</title>
+
+<span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
+<span style="font-size:15px;color:red"><b>* 버튼을 누르면 주간 개인 기록을 조회할 수 있습니다.</b></span><br><br>
+<div id="member-div">
+
+</div>
+
+<br><br>
+<span style="font-size:20px;"><b> - 개인 주간 기록 조회: <span id ="name-span" style="color:blue"></span> - </b></span><br><br>
+<div id="statistics-div">
+    <table id="weekly-statistics-table">
+        <thead><td>주간</td><td>게임 수</td><td>평균</td><td>최고 점수</td><td>최저 점수</td></thead>
+    </table>
+
+    <br><br>
+    <div style="font-size:20px;color:red">
+        (주간 점수 관련 시각화 들어가면 좋을 듯)
+    </div>
+</div>
+
+
+
+<script>
+  window.onload = initialize()
+
+  const memberList = []
+  const memberStatistics = new Map()
+
+  function initialize() {
+    initializeMember();
+  }
+
+  function initializeMember() {
+
+    const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+
+    fetch(spreadSheetUrl, null)
+      .then((response) => response.json())
+      .then((data) => initializeMemberMap(data["values"]))
+      .then(() => initializeMemberStatistics())
+      .catch((error) => console.log("error:", error));
+  }
+
+  function initializeMemberMap(values) {
+    for (let index = 0; index < values.length; index++) {
+      let name = values[index][0]
+      memberList.push({ "name" : name })
+    }
+    initializeMemberView()
+  }
+
+  function initializeMemberView() {
+    const memberDiv = document.getElementById("member-div");
+
+    let index = 0
+    for (const member of memberList) {
+      memberDiv.innerHTML += getMemberButtonString(member)
+      if ((index+1) % 8 === 0) {
+        memberDiv.innerHTML+= '<br><br>'
+      }
+      index++
+    }
+  }
+
+  function initializeMemberStatistics() {
+
+    const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+    fetch(spreadSheetMetaUrl, null)
+      .then((response) => response.json())
+      .then((data) => initializeWeeklyRecords(data["sheets"]))
+  }
+
+  function initializeWeeklyRecords(weeklySheets) {
+
+    for (const weeklySheet of weeklySheets) {
+      const sheetName = weeklySheet['properties']['title']
+      const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+
+      fetch(spreadSheetUrl, null)
+        .then((response) => response.json())
+        .then((data) => initializeMemberStatisticsMap(sheetName, data["values"]))
+        .catch((error) => console.log("error:", error));
+    }
+
+
+    console.log(memberStatistics)
+  }
+
+  function initializeMemberStatisticsMap(weeklyKey, values) {
+    for (let index = 0; index < values.length; index++) {
+      let name = values[index][0]
+
+      if (!memberStatistics.has(name)) {
+        memberStatistics.set(name, new Map())
+      }
+
+      const userMap = memberStatistics.get(name)
+
+      for (let valueIndex = 1; valueIndex < values[index].length; valueIndex++) {
+
+        if (!userMap.get(weeklyKey)) {
+          userMap.set(weeklyKey, [])
+        }
+
+        const weeklyRecords = userMap.get(weeklyKey)
+        const score = parseInt(values[index][valueIndex])
+        if (isNaN(score)) {
+          continue;
+        }
+        weeklyRecords.push(parseInt(values[index][valueIndex]))
+      }
+    }
+  }
+
+  function getMemberButtonString(member) {
+    return '<span style="padding: 5px;"><button id=' + member.name + ' onclick="showStatistics(this.id)">' + getMemberNameString(member) + '</button></span>'
+  }
+
+  function getMemberNameString(member) {
+    return member.name;
+  }
+
+  function showStatistics(name) {
+    console.log(memberStatistics.get(name))
+    const nameSpan = document.getElementById("name-span");
+    nameSpan.innerHTML = name
+
+    const statisticsTable = document.getElementById("weekly-statistics-table");
+    const totalRow = statisticsTable.getElementsByTagName("tr").length
+
+    for (let index = 1; index < totalRow; index++) {
+      statisticsTable.deleteRow(1)
+    }
+
+    let teamIndex = 1
+    const weeklyMap = memberStatistics.get(name)
+
+    if (weeklyMap === undefined) {
+      alert("올해 기록된 주간 기록이 없습니다.")
+      return
+    }
+
+    for (const weeklyKey of weeklyMap.keys()) {
+      const newRow = statisticsTable.insertRow(teamIndex)
+      newRow.insertCell(0).innerHTML = weeklyKey
+
+      const scores = weeklyMap.get(weeklyKey)
+
+      let statistics = getWeeklyStatistics(scores)
+      newRow.insertCell(1).innerHTML = statistics.gameCount
+      newRow.insertCell(2).innerHTML = statistics.average.toFixed(2)
+      newRow.insertCell(3).innerHTML = statistics.max
+      newRow.insertCell(4).innerHTML = statistics.min
+
+      teamIndex++
+    }
+
+  }
+
+  function getWeeklyStatistics(scores) {
+    let maxScore = 0
+    let minScore = 300
+    let total = 0
+    for (const score of scores) {
+      total += score
+
+      if (maxScore < score) {
+        maxScore = score
+      }
+
+      if (minScore > score) {
+        minScore = score
+      }
+    }
+
+    return { "average" : total / scores.length, "max" : maxScore, "min" : minScore, "gameCount" : scores.length}
+  }
+
+</script>
+
+<footer class="footer">
+    Copyright © 2022 NY.KING. All rights reserved.
+</footer>
+
+<style>
+    button {
+        width:80px;
+        height:30px;
+        font-size:12px;
+    }
+    footer {
+        align-content: center;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        height: 60px;
+        width: 100%;
+        background: grey;
+        color: white;
+    }
+    table, th, td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
