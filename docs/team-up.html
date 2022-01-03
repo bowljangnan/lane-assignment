@@ -83,7 +83,7 @@ version: v1.0.0 <br><br>
     let index = 0
     for (const member of memberList) {
       memberDiv.innerHTML += getMemberButtonString(member)
-      if ((index+1) % 10 === 0) {
+      if ((index+1) % 8 === 0) {
         memberDiv.innerHTML+= '<br><br>'
       }
       index++
@@ -127,7 +127,7 @@ version: v1.0.0 <br><br>
       const participant = participantMap.get(key)
 
       participantDiv.innerHTML += getParticipateButtonString(participant)
-      if ((index+1) % 10 === 0) {
+      if ((index+1) % 8 === 0) {
         participantDiv.innerHTML+= '<br><br>'
       }
       index++
