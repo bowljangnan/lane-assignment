@@ -12,15 +12,19 @@ version: v1.0.0 <br><br>
 <span style="font-size:20px;"><b> - 개인 주간 기록 조회: <span id ="name-span" style="color:blue"></span> - </b></span><br><br>
 <div id="statistics-div">
     <table id="weekly-statistics-table">
-        <thead><td>주간</td><td>게임 수</td><td>평균</td><td>최고 점수</td><td>최저 점수</td></thead>
+        <thead><td>2022년 주간</td><td>게임 수</td><td>평균</td><td>최고 점수</td><td>최저 점수</td><td>게임비</td></thead>
     </table>
-
     <br><br>
     <div style="font-size:20px;color:red">
         (주간 점수 관련 시각화 들어가면 좋을 듯)
     </div>
 </div>
 
+<br><br>
+<span style="font-size:20px;"><b> - Top 5 - </b></span><br><br>
+<div style="font-size:20px;color:red">
+    (준비 중)
+</div>
 
 
 <script>
@@ -165,9 +169,21 @@ version: v1.0.0 <br><br>
       newRow.insertCell(2).innerHTML = statistics.average.toFixed(2)
       newRow.insertCell(3).innerHTML = statistics.max
       newRow.insertCell(4).innerHTML = statistics.min
+      newRow.insertCell(5).innerHTML = (statistics.gameCount * 4100).toLocaleString() + "원"
 
       teamIndex++
     }
+
+    const newRow = statisticsTable.insertRow(teamIndex)
+
+    let totalStatistics = getYearlyStatistics(weeklyMap)
+
+    newRow.insertCell(0).innerHTML = "<span style='color:red'><b>전체 통계</b></span>"
+    newRow.insertCell(1).innerHTML = "<span style='color:red'><b>" + totalStatistics.count + "</b></span>"
+    newRow.insertCell(2).innerHTML = "<span style='color:red'><b>" + totalStatistics.average.toFixed(2) + "</b></span>"
+    newRow.insertCell(3).innerHTML = "<span style='color:red'><b>" + totalStatistics.max + "</b></span>"
+    newRow.insertCell(4).innerHTML = "<span style='color:red'><b>" + totalStatistics.min + "</b></span>"
+    newRow.insertCell(5).innerHTML = "<span style='color:red'><b>" + (totalStatistics.count * 4100).toLocaleString() + "원</b></span>"
 
   }
 
@@ -188,6 +204,32 @@ version: v1.0.0 <br><br>
     }
 
     return { "average" : total / scores.length, "max" : maxScore, "min" : minScore, "gameCount" : scores.length}
+  }
+
+  function getYearlyStatistics(weeklyMap) {
+    let maxScore = 0
+    let minScore = 300
+    let total = 0
+    let count = 0
+
+    for (const weeklyKey of weeklyMap.keys()) {
+      const scores = weeklyMap.get(weeklyKey)
+
+      for (const score of scores) {
+        total += score
+
+        if (maxScore < score) {
+          maxScore = score
+        }
+
+        if (minScore > score) {
+          minScore = score
+        }
+        count++
+      }
+    }
+
+    return { "average" : total / count, "count": count, "max" : maxScore, "min" : minScore}
   }
 
 </script>
