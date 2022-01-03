@@ -182,6 +182,7 @@ version: v1.0.1 <br><br>
   function calculateHandicap(group) {
     // 핸디 조정
 
+    // 모든 그룹이 180점 이상인 경우 핸디 조정 없음
     if (isAllTopSeedMember(group)) {
       return new Promise(function(resolve) { resolve() });
     }
@@ -189,10 +190,6 @@ version: v1.0.1 <br><br>
     const averageOfGroup = sumOfTeamScore(group) / group.length
 
     for (let participant of group) {
-      if (participant.score >= topSeedScore) {
-        continue;
-      }
-
       const diff = participant.score - averageOfGroup
       let handicap = 0
       if (Math.abs(diff) > 10) {
@@ -292,10 +289,10 @@ version: v1.0.1 <br><br>
     let guideString = '단순 에버리지 합산 차이에 의한 핸디캡이 아닌, \n'
     guideString += '현실적인 요소를 반영한 핸디캡 점수입니다. \n'
     guideString += '향후에 로직이 추가될 수 있습니다. \n\n'
-    guideString += '1. 에버리지: ' + topSeedScore + '이상의 멤버는 핸디 점수를 부여하지 않습니다. (항상 0)\n'
+    guideString += '1. 시드 내 모든 멤버가 에버리지 ' + topSeedScore + '이상인 경우 핸디 점수를 부여하지 않습니다.\n'
     guideString += '2. 각 시드 내 평균 점수와의 차이로 핸디캡 점수가 결정됩니다.\n'
     guideString += '3. 핸디캡 점수는 1의 자리에서 반올립 됩니다 (-15점 -> -20점, 7점 -> +10점)\n'
-    guideString += '4. 팀에 부족한 인원은 가상유저로 채워집니다 (그룹 내 에버리지의 반올림을 핸디로 적용)\n'
+    guideString += '4. 팀에 부족한 인원은 가상유저로 채워집니다 (시드 내 에버리지의 반올림을 핸디로 적용)\n'
     alert(guideString)
   }
 
