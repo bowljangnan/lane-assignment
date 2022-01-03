@@ -186,7 +186,8 @@ version: v1.0.1 <br><br>
     let str = ''
     str += seedNumber++ + ' 시드: '
     for (const participant of group) {
-      str += participant.name + ' '
+      let handicapStr = participant.handicap !== 0 ?'(' + participant.handicap + ')' : ''
+      str += participant.name + handicapStr + ' '
     }
     str += '<br>'
 
@@ -198,19 +199,35 @@ version: v1.0.1 <br><br>
 
     // 모든 그룹이 180점 이상인 경우 핸디 조정 없음
     if (isAllTopSeedMember(group)) {
+      for (let participant of group) {
+        participant.handicap = 0
+      }
       return new Promise(function(resolve) { resolve() });
     }
 
     const averageOfGroup = sumOfTeamScore(group) / group.length
 
+    let minusHandicapCount = 0;
     for (let participant of group) {
       const diff = participant.score - averageOfGroup
-      let handicap = 0
-      if (Math.abs(diff) > 10) {
-        handicap = Math.round(diff / 10) * 10 * -1
-      }
+      let handicap = Math.round(diff / 10) * 10 * -1
+      participant.handicap = Math.round(diff / 10) * 10 * -1
 
-      participant.handicap = handicap
+      if (handicap < 0) {
+        minusHandicapCount++
+      }
+    }
+
+    // 절반 이상이 마이너스 핸디인 경우 전체 핸디 조정
+    if (minusHandicapCount >= group.length / 2) {
+      for (let participant of group) {
+        if (participant.handicap < 0) {
+          let adjustHandicap = participant.handicap * -1
+          for (let adjuster of group) {
+            adjuster.handicap += adjustHandicap
+          }
+        }
+      }
     }
 
     return new Promise(function(resolve) { resolve() });
