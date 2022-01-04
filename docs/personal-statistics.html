@@ -289,25 +289,26 @@ version: v1.0.0 <br><br>
       type: 'bar',
       data: {
         labels: weeklySheets,
-        datasets: [{
-          label: name + ' 참여 횟수',
-          data: getWeeklyParticipationCountArray(name),
-          backgroundColor: createArrayObject(colors.targetBackground, labelCount),
-          borderColor: createArrayObject(colors.targetBorder, labelCount),
-          borderWidth: 1
-        }, {
-          label: '볼장난 전체 평균 참여 횟수',
-          data: getEntireMemberParticipationResult().entireCount,
-          backgroundColor: createArrayObject(colors.totalBackground, labelCount),
-          borderColor: createArrayObject(colors.totalBorder, labelCount),
-          borderWidth: 1
-        }, {
-          label: '볼장난 참여 횟수 1위',
-          data: getEntireMemberParticipationResult().maxCount,
-          backgroundColor: createArrayObject(colors.topBackground, labelCount),
-          borderColor: createArrayObject(colors.topBorder, labelCount),
-          borderWidth: 1
-        },
+        datasets: [
+          {
+            label: '볼장난 전체 평균 참여 횟수',
+            data: getEntireMemberParticipationResult().entireCount,
+            backgroundColor: createArrayObject(colors.totalBackground, labelCount),
+            borderColor: createArrayObject(colors.totalBorder, labelCount),
+            borderWidth: 1
+          }, {
+            label: name + ' 참여 횟수',
+            data: getWeeklyParticipationCountArray(name),
+            backgroundColor: createArrayObject(colors.targetBackground, labelCount),
+            borderColor: createArrayObject(colors.targetBorder, labelCount),
+            borderWidth: 1
+          }, {
+            label: '볼장난 참여 횟수 1위',
+            data: getEntireMemberParticipationResult().maxCount,
+            backgroundColor: createArrayObject(colors.topBackground, labelCount),
+            borderColor: createArrayObject(colors.topBorder, labelCount),
+            borderWidth: 1
+          },
         ]
       },
       options: {
@@ -492,14 +493,19 @@ version: v1.0.0 <br><br>
     for (const weeklySheet of weeklySheets) {
       let totalCount = 0
       let maxCount = 0
+      let totalMemberCount = 0
       for (const name of memberStatistics.keys()) {
         const count = memberStatistics.get(name).get(weeklySheet).length
         totalCount += count
+        if (count !== 0) {
+          totalMemberCount++
+        }
+
         if (maxCount < count) {
           maxCount = count
         }
       }
-      entireArray.push(parseInt(totalCount / memberStatistics.size))
+      entireArray.push(parseInt(totalCount / totalMemberCount))
       maxArray.push(maxCount)
     }
 
