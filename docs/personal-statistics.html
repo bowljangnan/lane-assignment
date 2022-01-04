@@ -4,6 +4,9 @@ version: v1.0.0 <br><br>
 <span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
 <span style="font-size:15px;color:red"><b>* 버튼을 누르면 주간 개인 기록을 조회할 수 있습니다.</b></span><br>
 <span style="font-size:15px;color:red"><b>* 올해 게임 기록이 없다면 버튼이 비활성화 됩니다.</b></span><br><br>
+<div style = "font-size:20px;margin-bottom: 20px">
+    검색: <input id="search-input" style = "width:200px;height:30px" onchange="initializeMemberView()" placeholder="이름을 검색하세요"/>
+</div>
 <div id="member-div">
 
 </div>
@@ -31,6 +34,7 @@ version: v1.0.0 <br><br>
   window.onload = initialize()
 
   const memberList = []
+  let memberViewList = []
   const memberStatistics = new Map()
 
   function initialize() {
@@ -53,20 +57,35 @@ version: v1.0.0 <br><br>
       let name = values[index][0]
       memberList.push({ "name" : name })
     }
+    memberViewList = memberList.filter(() => true)
+
     initializeMemberView()
   }
 
   function initializeMemberView() {
+
+    const searchInput = document.getElementById("search-input");
+
+    const keyword = searchInput.value.trim()
+    console.log(keyword)
+    if (keyword === '') {
+      memberViewList = memberList.filter(() => true)
+    } else {
+      memberViewList = memberList.filter((member) => member.name.includes(keyword))
+    }
+
     const memberDiv = document.getElementById("member-div");
+    memberDiv.innerHTML = ''
 
     let index = 0
-    for (const member of memberList) {
+    for (const member of memberViewList) {
       memberDiv.innerHTML += getMemberButtonString(member)
       if ((index+1) % 8 === 0) {
         memberDiv.innerHTML+= '<br><br>'
       }
       index++
     }
+    disableUnrecordUserButton()
   }
 
   function initializeMemberStatistics(callback) {
@@ -82,7 +101,7 @@ version: v1.0.0 <br><br>
   }
 
   function disableUnrecordUserButton() {
-    for (const memberName of memberList) {
+    for (const memberName of memberViewList) {
       const userMap = memberStatistics.get(memberName.name)
       if (userMap !== undefined && userMap.size !== 0) {
         document.getElementById(memberName.name).disabled = false;
