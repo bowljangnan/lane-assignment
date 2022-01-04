@@ -21,15 +21,16 @@ version: v1.0.0 <br><br>
 <span style="font-size:30px;"><b> - 개인 주간 기록 조회: <b><span id="name-span"
                                                           style="font-size:30px; color:blue;"></span></b> - </b></span>
 <br><br>
-<div style="width:800px;text-align: center">
+<div id="profile-area-div" style="width:800px;text-align: center; display: none;">
     <div id="profile-div" style="background-image: url(profiles/default.png);
         background-repeat : no-repeat;
         background-size: cover;
         background-position: center;
-        display: none;
+
     width: 250px; height: 250px; margin: 0 auto; border: 1px solid black"
     >
-    </div>
+    </div><br>
+    <span id="profile-guide-div" style="font-size:12px;color:red;"><b>멋있는 프로필 사진으로 변경하고 싶으신가요? 지금 노유👑에게 문의하세요!</b></span>
 </div>
 <br>
 <div id="statistics-div">
@@ -189,9 +190,10 @@ version: v1.0.0 <br><br>
     nameSpan.innerHTML = name
 
     const profileDiv = document.getElementById("profile-div");
+    const profileAreaDiv = document.getElementById("profile-area-div");
 
     profileDiv.style.backgroundImage = 'url(profiles/' + name + '.png), url(profiles/default.png)'
-    profileDiv.style.display = 'block';
+    profileAreaDiv.style.display = 'block';
 
     const statisticsTable = document.getElementById("weekly-statistics-table");
     const totalRow = statisticsTable.getElementsByTagName("tr").length
