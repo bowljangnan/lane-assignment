@@ -3,7 +3,7 @@
 version: v1.0.0 <br><br>
 <title>볼장난 주간 기록 통계 조회</title>
 <head>
-    <link rel="shortcut icon" type="image/x-icon" href="../resources/icons/icons.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="icons/icons.ico">
 </head>
 
 <span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
@@ -18,8 +18,20 @@ version: v1.0.0 <br><br>
 </div>
 
 <br><br>
-<span style="font-size:20px;"><b> - 개인 주간 기록 조회: <span id="name-span" style="color:blue"></span> - </b></span>
+<span style="font-size:30px;"><b> - 개인 주간 기록 조회: <b><span id="name-span"
+                                                          style="font-size:30px; color:blue;"></span></b> - </b></span>
 <br><br>
+<div style="width:800px;text-align: center">
+    <div id="profile-div" style="background-image: url(profiles/default.png);
+        background-repeat : no-repeat;
+        background-size: cover;
+        background-position: center;
+        display: none;
+    width: 250px; height: 250px; margin: 0 auto; border: 1px solid black"
+    >
+    </div>
+</div>
+<br>
 <div id="statistics-div">
     <table id="weekly-statistics-table" style="width:800px">
         <thead>
@@ -175,6 +187,11 @@ version: v1.0.0 <br><br>
   function showStatistics(name) {
     const nameSpan = document.getElementById("name-span");
     nameSpan.innerHTML = name
+
+    const profileDiv = document.getElementById("profile-div");
+
+    profileDiv.style.backgroundImage = 'url(profiles/' + name + '.png), url(profiles/default.png)'
+    profileDiv.style.display = 'block';
 
     const statisticsTable = document.getElementById("weekly-statistics-table");
     const totalRow = statisticsTable.getElementsByTagName("tr").length
