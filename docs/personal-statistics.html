@@ -271,7 +271,7 @@ version: v1.0.0 <br><br>
   function drawChart(name) {
     const chartDiv = document.getElementById("chart-div");
     chartDiv.innerHTML = ''
-    chartDiv.innerHTML += '<canvas id="score-distribution-chart"></canvas>'
+    chartDiv.innerHTML += '<canvas id="score-distribution-chart"></canvas><br><br>'
     chartDiv.innerHTML += '<canvas id="participation-chart"></canvas>'
 
     drawScoreDistributionChart(name)
@@ -311,6 +311,10 @@ version: v1.0.0 <br><br>
         ]
       },
       options: {
+        title: {
+          display: true,
+          text: name + ' 참여 횟수 막대 그래프'
+        },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
           yAxes: [{
@@ -409,6 +413,10 @@ version: v1.0.0 <br><br>
         ]
       },
       options: {
+        title: {
+          display: true,
+          text: name + ' 점수 분포도'
+        },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
           yAxes: [{
@@ -457,7 +465,7 @@ version: v1.0.0 <br><br>
 
   function createArrayObject(obj, count) {
     const array = [];
-    for (let i = 0 ; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       array.push(obj);
     }
 
