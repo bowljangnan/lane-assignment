@@ -62,7 +62,7 @@ version: v1.0.0 <br><br>
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
       let name = values[index][0]
-      memberList.push({"name": name})
+      memberList.push({"name": name === '노유한' ? '노유👑' : name})
     }
     memberViewList = memberList.filter(() => true)
 
@@ -140,7 +140,7 @@ version: v1.0.0 <br><br>
 
   function initializeMemberStatisticsMap(weeklyKey, values) {
     for (let index = 0; index < values.length; index++) {
-      let name = values[index][0]
+      let name = values[index][0] === '노유한' ? '노유👑' : values[index][0]
 
       if (!memberStatistics.has(name)) {
         memberStatistics.set(name, new Map())
