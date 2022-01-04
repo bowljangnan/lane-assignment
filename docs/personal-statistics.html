@@ -36,6 +36,7 @@ version: v1.0.0 <br><br>
 <script>
   window.onload = initialize()
 
+  let weeklySheets = []
   const memberList = []
   let memberViewList = []
   const memberStatistics = new Map()
@@ -114,10 +115,13 @@ version: v1.0.0 <br><br>
     }
   }
 
-  function initializeWeeklyRecords(weeklySheets) {
+  function initializeWeeklyRecords(weeklySheetDatas) {
 
-    for (const weeklySheet of weeklySheets) {
+    for (const weeklySheet of weeklySheetDatas) {
+
       const sheetName = weeklySheet['properties']['title']
+      weeklySheets.push(sheetName)
+
       const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
       fetch(spreadSheetUrl, null)
@@ -268,23 +272,71 @@ version: v1.0.0 <br><br>
     const chartDiv = document.getElementById("chart-div");
     chartDiv.innerHTML = ''
     chartDiv.innerHTML += '<canvas id="score-distribution-chart"></canvas>'
+    chartDiv.innerHTML += '<canvas id="participation-chart"></canvas>'
 
     drawScoreDistributionChart(name)
+    drawParticipationChart(name)
+  }
+
+  function drawParticipationChart(name) {
+    let ctx = document.getElementById("participation-chart").getContext('2d');
+
+    const colors = getParticipationBarChartColor();
+
+    const labelCount = weeklySheets.length
+
+    let scoreDistributionChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: weeklySheets,
+        datasets: [{
+          label: name + ' 참여 횟수',
+          data: getWeeklyParticipationCountArray(name),
+          backgroundColor: createArrayObject(colors.targetBackground, labelCount),
+          borderColor: createArrayObject(colors.targetBorder, labelCount),
+          borderWidth: 1
+        }, {
+          label: '볼장난 전체 평균 참여 횟수',
+          data: getEntireMemberParticipationResult().entireCount,
+          backgroundColor: createArrayObject(colors.totalBackground, labelCount),
+          borderColor: createArrayObject(colors.totalBorder, labelCount),
+          borderWidth: 1
+        }, {
+          label: '볼장난 참여 횟수 1위',
+          data: getEntireMemberParticipationResult().maxCount,
+          backgroundColor: createArrayObject(colors.topBackground, labelCount),
+          borderColor: createArrayObject(colors.topBorder, labelCount),
+          borderWidth: 1
+        },
+        ]
+      },
+      options: {
+        maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              stepSize: 5,
+              min: 0
+            }
+          }]
+        }
+      }
+    })
   }
 
   function drawScoreDistributionChart(name) {
     // 우선 컨텍스트를 가져옵니다.
     let ctx = document.getElementById("score-distribution-chart").getContext('2d');
 
-    const scoreCountArray = []
     let scoreDistributionChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: [
-          "0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100",
-          "100-110", "110-120", "120-130", "130-140", "140-150", "150-160", "160-170", "170-180", "180-190", "190-200",
-          "200-210", "210-220", "220-230", "230-240", "240-250", "250-260", "260-270", "270-280", "280-290", "290-300",
-          ],
+          "0", "10", "20", "30", "40", "50", "60", "70", "80", "90",
+          "100", "110", "120", "130", "140", "150", "160", "170", "180", "190",
+          "200", "210", "220", "230", "240", "250", "260", "270", "280", "290",
+        ],
         datasets: [{
           label: name + ' 점수 분포',
           data: getScoreDistributionData(name),
@@ -374,16 +426,79 @@ version: v1.0.0 <br><br>
   function getScoreDistributionData(name) {
     const weeklyMap = memberStatistics.get(name)
 
-    let totalArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    let totalArray = [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    ]
 
     for (const weeklyKey of weeklyMap.keys()) {
       const scores = weeklyMap.get(weeklyKey)
       for (const score of scores) {
-        totalArray[parseInt(score/10)] += 1
+        totalArray[parseInt(score / 10)] += 1
       }
     }
 
     return totalArray;
+  }
+
+  function getParticipationBarChartColor() {
+
+    const participationBarChartColor = {};
+    participationBarChartColor.targetBackground = 'rgba(54, 162, 235, 0.2)'
+    participationBarChartColor.targetBorder = 'rgba(54, 162, 235, 1)'
+    participationBarChartColor.totalBackground = 'rgba(75, 242, 192, 0.2)'
+    participationBarChartColor.totalBorder = 'rgba(75, 192, 192, 1)'
+    participationBarChartColor.topBackground = 'rgba(245, 99, 132, 0.2)'
+    participationBarChartColor.topBorder = 'rgba(255,99,132,1)'
+
+    return participationBarChartColor
+  }
+
+  function createArrayObject(obj, count) {
+    const array = [];
+    for (let i = 0 ; i < count; i++) {
+      array.push(obj);
+    }
+
+    return array;
+  }
+
+  function getWeeklyParticipationCountArray(name) {
+
+    const array = [];
+
+    for (const weeklySheet of weeklySheets) {
+      array.push(memberStatistics.get(name).get(weeklySheet).length)
+    }
+    return array;
+  }
+
+  function getEntireMemberParticipationResult() {
+
+    const entireArray = []
+    const maxArray = []
+
+    const result = {}
+
+    for (const weeklySheet of weeklySheets) {
+      let totalCount = 0
+      let maxCount = 0
+      for (const name of memberStatistics.keys()) {
+        const count = memberStatistics.get(name).get(weeklySheet).length
+        totalCount += count
+        if (maxCount < count) {
+          maxCount = count
+        }
+      }
+      entireArray.push(parseInt(totalCount / memberStatistics.size))
+      maxArray.push(maxCount)
+    }
+
+    result.entireCount = entireArray
+    result.maxCount = maxArray
+
+    return result;
   }
 
 </script>
