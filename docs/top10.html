@@ -6,147 +6,514 @@ version: v1.0.0 <br><br>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KPHH0BQLN"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
       gtag('js', new Date());
 
       gtag('config', 'G-2KPHH0BQLN');
     </script>
 </head>
 
-<span style="font-size:50px;color:red"><b> Coming Soooooooon !! </b></span><br><br>
 <span style="font-size:50px;"><b> 볼장난 명예의 전당 </b></span><br><br><br>
 <div>
 </div>
 <div>
     <span style="font-size:20px;"><b> - 월간 / 연간 통계 - </b></span><br>
-    <div style = "margin: 20px">
-        <select>
-            <option>
+    <div style="margin: 20px">
+        <select id='month-select'
+                style="width:100px;height:25px;font-size:20px;align-content: center"
+                onchange="initializeRankView()">
+            <option value=12 selected>
                 전체
             </option>
-            <option>
+            <option value=0>
                 1월
             </option>
-            <option>
+            <option value=1>
                 2월
             </option>
-            <option>
-                ...
+            <option value=2>
+                3월
+            </option>
+            <option value=3>
+                4월
+            </option>
+            <option value=4>
+                5월
+            </option>
+            <option value=5>
+                6월
+            </option>
+            <option value=6>
+                7월
+            </option>
+            <option value=7>
+                8월
+            </option>
+            <option value=8>
+                9월
+            </option>
+            <option value=9>
+                10월
+            </option>
+            <option value=10>
+                11월
+            </option>
+            <option value=11>
+                12월
             </option>
         </select>
     </div>
-    <div style= "font-size:15px;margin-left: 20px;margin-bottom: 5px;"><b> 볼장난 게임 수: N 게임 </b></div>
-    <div style= "font-size:15px;margin-left: 20px;margin-bottom: 5px;"><b> 볼장난 참여 회원 수: N 명 </b></div>
-    <div style = "float:left;margin: 20px">
+    <div style="font-size:15px;margin-left: 20px;margin-bottom: 5px;"><b> 볼장난 게임 수: <span
+            id="total-game-count-div" style="color: red"></span> 게임 </b></div>
+    <div style="font-size:15px;margin-left: 20px;margin-bottom: 5px;"><b> 볼장난 참여 회원 수: <span
+            id="total-participant-count-div" style="color: red"></span> 명 </b></div>
+    <div style="float:left;margin: 20px;width: 400px">
         <span style="font-size:15px;"><b> 게임 수 </b></span><br>
-        <table>
-            <tr>
-                <td>순위</td>
-                <td>이름</td>
-                <td>횟수</td>
+        <table style="width: 100%; text-align: center">
+            <thead>
+            <td><b>순위</b></td>
+            <td><b>이름</b></td>
+            <td><b>횟수</b></td>
+            </thead>
+            <tr id="game-count-top1" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
+            <tr id="game-count-top2" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top3" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top4" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top5" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top6" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top7" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top8" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top9" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="game-count-top10" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
     </div>
 
-    <div style = "float:left;margin: 20px">
+    <div style="float:left;margin: 20px;width: 400px">
+        <span style="font-size:15px;"><b> 모임 참여 횟수 </b></span><br>
+        <table style="width: 100%; text-align: center">
+            <thead>
+            <td><b>순위</b></td>
+            <td><b>이름</b></td>
+            <td><b>횟수</b></td>
+            </thead>
+            <tr id="participation-top1" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top2" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top3" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top4" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top5" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top6" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top7" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top8" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top9" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="participation-top10" style="width: 20px; font-size: 15px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="float:left;margin: 20px;width: 400px">
         <span style="font-size:15px;"><b> 에버리지 </b></span><br>
-        <table>
-            <tr>
-                <td>순위</td>
-                <td>이름</td>
-                <td>점수</td>
+        <table style="width: 100%; text-align: center">
+            <thead>
+            <td><b>순위</b></td>
+            <td><b>이름</b></td>
+            <td><b>점수</b></td>
+            </thead>
+            <tr id="average-top1" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
+            <tr id="average-top2" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top3" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top4" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top5" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top6" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top7" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top8" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top9" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="average-top10" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
     </div>
-    <div style = "float:left;margin: 20px">
-        <span style="font-size:15px;"><b> 200점 이상 횟수 </b></span><br>
-        <table>
-            <tr>
-                <td>순위</td>
-                <td>이름</td>
-                <td>횟수</td>
-            </tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-        </table>
-    </div>
+    <!--    <div style = "float:left;margin: 20px">-->
+    <!--        <span style="font-size:15px;"><b> 200점 이상 횟수 </b></span><br>-->
+    <!--        <table>-->
+    <!--            <tr>-->
+    <!--                <td>순위</td>-->
+    <!--                <td>이름</td>-->
+    <!--                <td>횟수</td>-->
+    <!--            </tr>-->
+    <!--            <tr id = "over200-top1"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top2"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top3"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top4"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top5"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top6"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top7"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top8"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top9"><td></td><td></td><td></td></tr>-->
+    <!--            <tr id = "over200-top10"><td></td><td></td><td></td></tr>-->
+    <!--        </table>-->
+    <!--    </div>-->
 </div>
 <div style="clear:both"></div>
 <div><br><br>
     <span style="font-size:20px;"><b> - 전체 통계 - </b></span><br><br>
 
-    <div style = "float:left;margin: 20px">
-        <span style="font-size:15px;"><b> 퍼펙트(300) 클럽 </b></span><br>
-        <table>
-            <tr>
-                <td>순위</td>
-                <td>이름</td>
-                <td>횟수</td>
+    <div style="float:left;margin: 20px;width: 400px">
+        <span style="font-size:15px"><b> 퍼펙트(300) 클럽 </b></span><br>
+        <table style="width: 100%">
+            <thead>
+            <td><b>순위</b></td>
+            <td><b>이름</b></td>
+            <td><b>횟수</b></td>
+            </thead>
+            <tr id="perfect-top1">
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-        </table>
-    </div>
-    <div style="float:left;margin: 20px">
-        <span style="font-size:15px;"><b> 무슨 무슨 순위 </b></span><br>
-        <table>
-            <tr>
-                <td>순위</td>
-                <td>이름</td>
-                <td>횟수</td>
+            <tr id="perfect-top2">
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td></tr>
+            <tr id="perfect-top3">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top4">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top5">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top6">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top7">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top8">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top9">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="perfect-top10">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
     </div>
 </div>
 
 <script>
+  window.onload = initialize()
 
+  const memberList = []
+
+  function initialize() {
+    const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/total?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+
+    fetch(spreadSheetUrl, null)
+      .then((response) => response.json())
+      .then((data) => initializeMemberList(data["values"]))
+      .then(() => initializeRankView())
+      .catch((error) => console.log("error:", error))
+  }
+
+  function initializeMemberList(values) {
+    for (let index = 0; index < values.length; index++) {
+      let name = values[index][0]
+
+      const user = {}
+      user.name = name
+
+      const monthlyData = []
+      for (let valueIndex = 1; valueIndex < values[index].length; valueIndex += 4) {
+        const data = {}
+        data.participationCount = values[index][valueIndex]
+        data.gameCount = values[index][valueIndex + 1]
+        data.average = values[index][valueIndex + 2]
+
+        monthlyData.push(data)
+      }
+
+      monthlyData[monthlyData.length - 1].average = totalAverage(monthlyData)
+
+      user.monthlyData = monthlyData
+      memberList.push(user)
+    }
+
+    console.log(memberList)
+  }
+
+  function initializeRankView() {
+    const month = document.getElementById("month-select").value
+    initializeTable();
+    initializeTotalGameCount(month);
+    initializeParticipantCount(month);
+    initializeGameCountRank(month)
+    initializeParticipationCountRank(month)
+    initializeAverageRank(month)
+  }
+
+  function initializeGameCountRank(monthlyIndex) {
+    const top10 = memberList.filter(member =>
+      member.monthlyData !== null
+      && member.monthlyData[monthlyIndex].gameCount !== ''
+      && member.monthlyData[monthlyIndex].gameCount != 0)
+      .sort((member1, member2) => member2.monthlyData[monthlyIndex].gameCount
+        - member1.monthlyData[monthlyIndex].gameCount)
+      .slice(0, 10)
+
+    let index = 1
+    for (const member of top10) {
+      const row = document.getElementById("game-count-top" + index);
+      row.innerHTML = ''
+      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + member.name + '</td>'
+      row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].gameCount + '</td>'
+
+      index += 1
+    }
+  }
+
+  function initializeParticipationCountRank(monthlyIndex) {
+    const top10 = memberList.filter(member =>
+      member.monthlyData !== null
+      && member.monthlyData[monthlyIndex].participationCount !== ''
+      && member.monthlyData[monthlyIndex].participationCount != 0)
+      .sort((member1, member2) => member2.monthlyData[monthlyIndex].participationCount
+        - member1.monthlyData[monthlyIndex].participationCount)
+      .slice(0, 10)
+
+    let index = 1
+    for (const member of top10) {
+      const row = document.getElementById("participation-top" + index);
+      row.innerHTML = ''
+      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + member.name + '</td>'
+      row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].participationCount + '</td>'
+
+      index += 1
+    }
+  }
+
+  function initializeAverageRank(monthlyIndex) {
+
+    const top10 = memberList.filter(member =>
+      member.monthlyData !== null
+      && member.monthlyData[monthlyIndex].participationCount !== ''
+      && member.monthlyData[monthlyIndex].participationCount != 0
+      && member.monthlyData[monthlyIndex].gameCount > 5)
+      .sort((member1, member2) => member2.monthlyData[monthlyIndex].average
+        - member1.monthlyData[monthlyIndex].average)
+      .slice(0, 10)
+
+    let index = 1
+    for (const member of top10) {
+      const row = document.getElementById("average-top" + index);
+      row.innerHTML = ''
+      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + member.name + '</td>'
+      row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].average + '</td>'
+
+      index += 1
+    }
+  }
+
+  function initializeTotalGameCount(monthlyIndex) {
+    const filteredList = memberList.filter(member =>
+      member.monthlyData !== null
+      && member.monthlyData[monthlyIndex].gameCount !== ''
+      && member.monthlyData[monthlyIndex].gameCount != 0)
+
+    let totalCount = 0;
+    if (filteredList.length !== 0) {
+      totalCount = filteredList.map(member => member.monthlyData[monthlyIndex].gameCount)
+        .reduceRight((a, b) => parseInt(a) + parseInt(b))
+    }
+
+    document.getElementById("total-game-count-div").innerHTML = totalCount;
+  }
+
+  function initializeParticipantCount(monthlyIndex) {
+    const filteredList = memberList.filter(member =>
+      member.monthlyData !== null
+      && member.monthlyData[monthlyIndex].participationCount !== ''
+      && member.monthlyData[monthlyIndex].participationCount != 0)
+
+    document.getElementById("total-participant-count-div").innerHTML = filteredList.length;
+  }
+
+  function getRankString(rank) {
+    switch (rank) {
+      case 1:
+        return '🥇'
+      case 2:
+        return '🥈'
+      case 3:
+        return '🥉'
+      default:
+        return rank + '위'
+    }
+  }
+
+  function initializeTable() {
+    for (let i = 1; i <= 10; i++) {
+      document.getElementById("game-count-top" + i).innerHTML = '<td></td><td></td><td></td>';
+      document.getElementById("participation-top" + i).innerHTML = '<td></td><td></td><td></td>';
+      document.getElementById("average-top" + i).innerHTML = '<td></td><td></td><td></td>';
+    }
+  }
+
+  function totalAverage(monthlyData) {
+    let totalCount = 0;
+    let totalScore = 0;
+    for (let i = 0; i < monthlyData.length - 1; i++) {
+      if (monthlyData[i].gameCount == 0) {
+        continue
+      }
+      totalScore += monthlyData[i].average * monthlyData[i].gameCount
+      totalCount += monthlyData[i].gameCount
+    }
+
+    return (totalScore / totalCount).toFixed(1)
+  }
 
 </script>
 
@@ -156,10 +523,11 @@ version: v1.0.0 <br><br>
 
 <style>
     button {
-        width:110px;
-        height:30px;
-        font-size:12px;
+        width: 110px;
+        height: 30px;
+        font-size: 12px;
     }
+
     footer {
         align-content: center;
         position: fixed;
@@ -170,6 +538,7 @@ version: v1.0.0 <br><br>
         background: grey;
         color: white;
     }
+
     table, th, td {
         padding: 10px;
         border: 1px solid black;
