@@ -635,7 +635,11 @@ version: v1.0.0
     const array = [];
 
     for (const weeklySheet of weeklySheets) {
-      array.push(memberStatistics.get(name).get(weeklySheet).length)
+      const scores = memberStatistics.get(name).get(weeklySheet);
+      if (scores === undefined) {
+        continue;
+      }
+      array.push(scores.length)
     }
     return array;
   }
@@ -652,7 +656,11 @@ version: v1.0.0
       let maxCount = 0
       let totalMemberCount = 0
       for (const name of memberStatistics.keys()) {
-        const count = memberStatistics.get(name).get(weeklySheet).length
+        const scores = memberStatistics.get(name).get(weeklySheet)
+        if (scores === undefined) {
+          continue
+        }
+        const count = scores.length
         totalCount += count
         if (count !== 0) {
           totalMemberCount++
@@ -677,7 +685,11 @@ version: v1.0.0
     const array = [];
 
     for (const weeklySheet of weeklySheets) {
-      array.push(getWeeklyStatistics(memberStatistics.get(name).get(weeklySheet)).average.toFixed(2))
+      const scores = memberStatistics.get(name).get(weeklySheet)
+      if (scores === undefined) {
+        continue
+      }
+      array.push(getWeeklyStatistics(scores).average.toFixed(2))
     }
     return array;
   }
@@ -694,7 +706,12 @@ version: v1.0.0
       let memberCount = 0
       let maxAverage = 0
       for (const name of memberStatistics.keys()) {
-        const average = getWeeklyStatistics(memberStatistics.get(name).get(weeklySheet)).average
+        const scores = memberStatistics.get(name).get(weeklySheet)
+        if (scores === undefined) {
+          continue
+        }
+
+        const average = getWeeklyStatistics(scores).average
         if (average !== 0) {
           total += average
           memberCount++
