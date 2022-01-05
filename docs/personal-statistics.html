@@ -171,6 +171,10 @@ version: v1.0.0
   }
 
   function initializeWeeklyRecords(weeklySheetDatas) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = convertName(urlParams.get('name'));
+
+    let count = 0;
 
     for (const weeklySheet of weeklySheetDatas) {
 
@@ -179,9 +183,15 @@ version: v1.0.0
 
       const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
+      count++;
       fetch(spreadSheetUrl, null)
         .then((response) => response.json())
         .then((data) => initializeMemberStatisticsMap(sheetName, data["values"]))
+        .then(() => {
+          if (name != null && memberStatistics.get(name) !== undefined && weeklySheetDatas.length === count) {
+            showStatistics(name)
+          }
+        })
         .catch((error) => console.log("error:", error));
     }
 
@@ -690,7 +700,7 @@ version: v1.0.0
     return name === '노유한' ? '노유👑' : name
   }
 
- </script>
+</script>
 
 <footer class="footer">
     Copyright © 2022 NY.KING. All rights reserved.
