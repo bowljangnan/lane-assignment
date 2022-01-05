@@ -117,14 +117,12 @@ version: v1.0.0
     disableUnrecordUserButton()
   }
 
-  function initializeMemberStatistics(callback) {
+  function initializeMemberStatistics() {
 
     const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
     fetch(spreadSheetMetaUrl, null)
       .then((response) => response.json())
       .then((data) => initializeWeeklyRecords(data["sheets"]))
-
-    setTimeout(() => disableUnrecordUserButton(), 1000)
 
     return new Promise(function (resolve) {
       resolve()
@@ -184,6 +182,7 @@ version: v1.0.0
         weeklyRecords.push(parseInt(values[index][valueIndex]))
       }
     }
+    disableUnrecordUserButton()
   }
 
   function getMemberButtonString(member) {
