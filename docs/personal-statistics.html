@@ -205,6 +205,9 @@ version: v1.0.0
   }
 
   function initializeMemberStatisticsMap(weeklyKey, values) {
+    if (values === undefined) {
+      return
+    }
     for (let index = 0; index < values.length; index++) {
       let name = convertName(values[index][0])
 
@@ -533,8 +536,6 @@ version: v1.0.0
 
     const colors = getParticipationBarChartColor();
 
-    const labelCount = weeklySheets.length
-
     average = new Chart(ctx, {
       type: 'line',
       data: {
@@ -721,8 +722,14 @@ version: v1.0.0
           maxAverage = average
         }
       }
-      entireArray.push((total / memberCount).toFixed(2))
-      maxArray.push(maxAverage.toFixed(2))
+
+      if (memberCount !== 0 && total !== 0) {
+        entireArray.push((total / memberCount).toFixed(2))
+      }
+
+      if (maxAverage !== 0) {
+        maxArray.push(maxAverage.toFixed(2))
+      }
     }
 
     result.entireAverage = entireArray
