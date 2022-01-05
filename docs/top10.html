@@ -26,8 +26,8 @@ version: v1.0.0
     <div style="margin: 20px">
         <select id='month-select'
                 style="width:100px;height:25px;font-size:20px;align-content: center"
-                onchange="initializeRankView()">
-            <option value=12 selected>
+                onchange="changeMonthSelect()">
+            <option value=12>
                 전체
             </option>
             <option value=0>
@@ -298,10 +298,14 @@ version: v1.0.0
   function initialize() {
     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/total?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
+    const month = new Date().getMonth()
+    document.getElementById("month-select")[month + 1].selected = true
+
     fetch(spreadSheetUrl, null)
       .then((response) => response.json())
       .then((data) => initializeMemberList(data["values"]))
-      .then(() => initializeRankView())
+      .then(() => initializeRankView(month))
+      .then(() => initializePerfect())
       .catch((error) => console.log("error:", error))
   }
 
@@ -331,16 +335,18 @@ version: v1.0.0
     console.log(memberList)
   }
 
-  function initializeRankView() {
-    const month = new Date().getMonth()
-    document.getElementById("month-select")[month + 1].selected = true
+  function changeMonthSelect() {
+    const month = document.getElementById("month-select").value
+    initializeRankView(month)
+  }
+
+  function initializeRankView(month) {
     initializeTable();
     initializeTotalGameCount(month);
     initializeParticipantCount(month);
     initializeGameCountRank(month)
     initializeParticipationCountRank(month)
     initializeAverageRank(month)
-    initializePerfect();
   }
 
   function initializeGameCountRank(monthlyIndex) {
@@ -391,7 +397,7 @@ version: v1.0.0
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex].participationCount !== ''
       && member.monthlyData[monthlyIndex].participationCount != 0
-      && member.monthlyData[monthlyIndex].gameCount > 10)
+      && member.monthlyData[monthlyIndex].gameCount >= 10)
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].average
         - member1.monthlyData[monthlyIndex].average)
       .slice(0, 10)
