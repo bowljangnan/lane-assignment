@@ -195,11 +195,11 @@ version: v1.0.0
     </div>
 
     <div style="float:left;margin: 20px;width: 400px">
-        <span style="font-size:15px;"><b> 에버리지 </b></span><br>
+        <span style="font-size:15px;"><b> 에버리지 <span style="color:red">(10게임 이상)</span> </b></span><br>
         <table style="width: 100%; text-align: center">
             <thead>
             <td><b>순위</b></td>
-            <td><b>이름</b></td>
+            <td><b>이름(게임 수)</b></td>
             <td><b>점수</b></td>
             </thead>
             <tr id="average-top1" style="width: 20px; font-size: 15px;font-weight: bold">
@@ -383,7 +383,8 @@ version: v1.0.0
   }
 
   function initializeRankView() {
-    const month = document.getElementById("month-select").value
+    const month = new Date().getMonth()
+    document.getElementById("month-select")[month + 1].selected = true
     initializeTable();
     initializeTotalGameCount(month);
     initializeParticipantCount(month);
@@ -440,7 +441,7 @@ version: v1.0.0
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex].participationCount !== ''
       && member.monthlyData[monthlyIndex].participationCount != 0
-      && member.monthlyData[monthlyIndex].gameCount > 5)
+      && member.monthlyData[monthlyIndex].gameCount > 10)
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].average
         - member1.monthlyData[monthlyIndex].average)
       .slice(0, 10)
@@ -450,7 +451,7 @@ version: v1.0.0
       const row = document.getElementById("average-top" + index);
       row.innerHTML = ''
       row.innerHTML += '<td>' + getRankString(index) + '</td>'
-      row.innerHTML += '<td>' + member.name + '</td>'
+      row.innerHTML += '<td>' + member.name  + '(' + member.monthlyData[monthlyIndex].gameCount + ')</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].average + '</td>'
 
       index += 1
