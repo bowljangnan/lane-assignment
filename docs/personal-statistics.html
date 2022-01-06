@@ -75,6 +75,7 @@ version: v1.0.0
   let scoreDistributionChart
   let participationChart
   let averageChart
+  let allMemberScoreDistributionChart
 
   function initialize() {
     initializeMember();
@@ -367,16 +368,22 @@ version: v1.0.0
       averageChart.destroy();
     }
 
+    if (averageChart !== undefined && averageChart != null) {
+      allMemberScoreDistributionChart.destroy();
+    }
+
     const chartDiv = document.getElementById("chart-div");
 
     chartDiv.innerHTML = ''
     chartDiv.innerHTML += '<canvas id="score-distribution-chart"></canvas><br><br>'
     chartDiv.innerHTML += '<canvas id="participation-chart"></canvas><br><br>'
     chartDiv.innerHTML += '<canvas id="average-chart"></canvas><br>'
+    chartDiv.innerHTML += '<canvas id="all-member-score-distribution-chart"></canvas><br>'
 
     drawScoreDistributionChart(name)
     drawParticipationChart(name)
     drawAverageChart(name)
+    drawAllMemberScoreDistributionChart(name)
   }
 
   function drawScoreDistributionChart(name) {
@@ -592,6 +599,46 @@ version: v1.0.0
     })
   }
 
+  function drawAllMemberScoreDistributionChart(name) {
+    // 우선 컨텍스트를 가져옵니다.
+    let ctx = document.getElementById("all-member-score-distribution-chart").getContext('2d');
+    const targetAverage = getTotalAverageScore(name)
+    allMemberScoreDistributionChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [
+          "0", "10", "20", "30", "40", "50", "60", "70", "80", "90",
+          "100", "110", "120", "130", "140", "150", "160", "170", "180", "190",
+          "200", "210", "220", "230", "240", "250", "260", "270", "280", "290",
+        ],
+        datasets: [{
+          label: name + ' 에버리지 포함 구간(' + targetAverage  + ')',
+          data: getAllMemberAverageDistributionData(),
+          backgroundColor: getAllMemberAverageChartBackgroundColor(targetAverage),
+          borderColor: getAllMemberAverageChartBorderColor(targetAverage),
+          borderWidth: 1
+        },
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: '볼장난 전체 멤버 에버리지 분포도'
+        },
+        maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              stepSize: 1,
+              min: 0
+            }
+          }]
+        }
+      }
+    })
+  }
+
   function getScoreDistributionData(name) {
     const weeklyMap = memberStatistics.get(name)
 
@@ -611,6 +658,28 @@ version: v1.0.0
     return totalArray;
   }
 
+  function getAllMemberAverageDistributionData() {
+    let totalArray = [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    ]
+
+    for (const memberName of memberStatistics.keys()) {
+      let count = 0
+      let total = 0
+      const member = memberStatistics.get(memberName)
+      for (const weeklyKey of member.keys()) {
+        total += member.get(weeklyKey).reduce((prev, current) => prev + current)
+        count += member.get(weeklyKey).length
+      }
+
+      totalArray[parseInt((total / count) / 10)] += 1
+    }
+
+    return totalArray
+  }
+
   function getParticipationBarChartColor() {
 
     const participationBarChartColor = {};
@@ -622,6 +691,31 @@ version: v1.0.0
     participationBarChartColor.topBorder = 'rgba(255,99,132,1)'
 
     return participationBarChartColor
+  }
+
+  function getAllMemberAverageChartBackgroundColor(targetAverage) {
+    let array = [ 'rgba(245, 99, 132, 0.2)' ]
+
+    for (let i=1; i<30; i++) {
+      if (parseInt(targetAverage / 10) === i) {
+        array.push('rgba(245, 99, 132, 0.2)')
+        continue;
+      }
+      array.push('rgba(54, 162, 235, 0.2)')
+    }
+    return array
+  }
+
+  function getAllMemberAverageChartBorderColor(targetAverage) {
+    let array = [ 'rgba(255,99,132,1)' ]
+    for (let i=1; i<30; i++) {
+      if (parseInt(targetAverage / 10) === i) {
+        array.push('rgba(255,99,132,1)',)
+        continue;
+      }
+      array.push('rgba(54, 162, 235, 1)')
+    }
+    return array
   }
 
   function createArrayObject(obj, count) {
@@ -695,6 +789,22 @@ version: v1.0.0
       array.push(getWeeklyStatistics(scores).average.toFixed(2))
     }
     return array;
+  }
+
+  function getTotalAverageScore(name) {
+
+    let total = 0;
+    let count = 0;
+
+    for (const weeklySheet of weeklySheets) {
+      const scores = memberStatistics.get(name).get(weeklySheet)
+      if (scores === undefined) {
+        continue
+      }
+      total += scores.reduce((prev, current) => prev + current)
+      count += scores.length
+    }
+    return (total / count).toFixed(2);
   }
 
   function getEntireMemberAverageResult() {
