@@ -89,7 +89,13 @@ version: v1.0.2
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
       let name = getNohyooKingValue(values[index][0])
-      memberList.push({ "id": index, "name" : name, "score" : parseInt(values[index][1]), "handicap": 0 })
+      let member = {}
+      member.id = index
+      member.name = name
+      member.score = parseInt(values[index][1])
+      member.tier = parseInt(values[index][2])
+      member.handicap = 0
+      memberList.push(member)
     }
     initializeMemberView()
   }
@@ -180,7 +186,7 @@ version: v1.0.2
         group.push(participant)
       }
 
-      calculateHandicap(group)
+      calculateHandicapByTier(group)
         .then(() => groups.push(group))
         .then(() => {
           const groupDiv = document.getElementById("group-div");
@@ -245,6 +251,46 @@ version: v1.0.2
     }
 
     return new Promise(function(resolve) { resolve() });
+  }
+
+  function calculateHandicapByTier(group) {
+    // 핸디 조정
+
+    const highestTier = getHighestTierInGroup(group)
+    const highestScoreMember = getHighestScoreMemberInGroup(group)
+
+    group.map(participant => {
+      if (participant.tier === 0) {
+        participant.handicap = Math.floor((highestScoreMember.score - participant.score) / 10) * 10
+        return
+      }
+      const tierDiff = participant.tier - highestTier
+      participant.handicap = tierDiff * 10
+    })
+
+    group.map(participant => {
+      for (const other of group) {
+        if (other.tier < participant.tier && participant.score > other.score) {
+          participant.handicap = other.handicap
+        }
+      }
+    })
+
+    return new Promise(function(resolve) { resolve() });
+  }
+
+  function getHighestTierInGroup(group) {
+    const excludedZeroTierGroup = group.filter(x => x.tier !== 0)
+
+    if (excludedZeroTierGroup.length === 0) {
+      return 0
+    }
+
+    return Math.min(...excludedZeroTierGroup.map(x => x.tier))
+  }
+
+  function getHighestScoreMemberInGroup(group) {
+    return group.reduce((prev, current) => (prev.score > current.score) ? prev : current)
   }
 
   function isAllTopSeedMember(group) {
@@ -331,12 +377,11 @@ version: v1.0.2
   }
 
   function guideRecommendHandicapScore() {
-    let guideString = '단순 에버리지 합산 차이에 의한 핸디캡이 아닌, \n'
-    guideString += '현실적인 요소를 반영한 핸디캡 점수입니다. \n'
-    guideString += '향후에 로직이 추가될 수 있습니다. \n\n'
-    guideString += '1. 시드 내 모든 멤버가 에버리지 ' + topSeedScore + '이상인 경우 핸디 점수를 부여하지 않습니다.\n'
-    guideString += '2. 각 시드 내 평균 점수와의 차이로 핸디캡 점수가 결정됩니다.\n'
-    guideString += '3. 핸디캡 점수는 1의 자리에서 반올립 됩니다 (-15점 -> -20점, 7점 -> +10점)\n'
+    let guideString = '볼장난 티어를 기반으로 한 핸디 점수입니다. \n'
+    guideString += '볼장난 티어는 점수 구간과 200점 이상 점수 빈도 등을 고려합니다. \n'
+    guideString += '1. 티어차이 1당 10점을 부여합니다.\n'
+    guideString += '2. 각 시드의 최고 티어 유저를 기준으로 핸디를 부여합니다.\n'
+    guideString += '3. 0티어는 시드 내 최고 에버리지와의 차에서 "버림" 연산한 값을 핸디로 부여합니다.\n'
     guideString += '4. 팀에 부족한 인원은 가상유저로 채워집니다 (시드 내 에버리지의 반올림을 핸디로 적용)\n'
     alert(guideString)
   }
