@@ -183,7 +183,6 @@ version: v1.0.0
     for (const weeklySheet of weeklySheetDatas) {
 
       const sheetName = weeklySheet['properties']['title']
-      weeklySheets.push(sheetName)
 
       const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
@@ -205,9 +204,12 @@ version: v1.0.0
   }
 
   function initializeMemberStatisticsMap(weeklyKey, values) {
-    if (values === undefined) {
+    if (values === undefined || values.length === 0) {
       return
     }
+
+    weeklySheets.push(weeklyKey)
+
     for (let index = 0; index < values.length; index++) {
       let name = convertName(values[index][0])
 
