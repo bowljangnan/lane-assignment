@@ -372,10 +372,14 @@ version: v1.0.2
     return sumOfScore;
   }
 
-  function getKeys() {
+  function getKeysByOrderByScore() {
     return Array.from( participantMap.keys() ).sort(function (a, b) {
       return a - b;
     });
+  }
+
+  function getKeys() {
+    return Array.from(participantMap).sort((a, b) => b[1].score - a[1].score).map(member => member[1].id)
   }
 
   function guideRecommendHandicapScore() {
