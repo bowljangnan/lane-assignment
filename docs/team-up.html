@@ -175,7 +175,7 @@ version: v1.0.2
   }
 
   function divideGroupAndTeam(teamCount) {
-    let keys = getKeys()
+    let keys = getKeysByOrderByScore()
     groups = []
 
     for (let keyIndex = 0; keyIndex < keys.length; keyIndex += teamCount) {
@@ -272,7 +272,7 @@ version: v1.0.2
 
     group.map(participant => {
       for (const other of group) {
-        if (other.tier < participant.tier && participant.score > other.score) {
+        if (other.tier !== 0 && other.tier < participant.tier && participant.score > other.score) {
           participant.handicap = other.handicap
         }
       }
@@ -372,13 +372,13 @@ version: v1.0.2
     return sumOfScore;
   }
 
-  function getKeysByOrderByScore() {
+  function getKeys() {
     return Array.from( participantMap.keys() ).sort(function (a, b) {
       return a - b;
     });
   }
 
-  function getKeys() {
+  function getKeysByOrderByScore() {
     return Array.from(participantMap).sort((a, b) => b[1].score - a[1].score).map(member => member[1].id)
   }
 
