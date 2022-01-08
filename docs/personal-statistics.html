@@ -77,6 +77,8 @@ version: v1.0.0
   let averageChart
   let allMemberScoreDistributionChart
 
+  let currentSelectedButton
+
   function initialize() {
     initializeMember();
   }
@@ -246,6 +248,14 @@ version: v1.0.0
   }
 
   function showStatistics(name) {
+    gtag('event', 'user_button', { 'event_category' : '개인 기록 조회', 'event_label' : name})
+
+    if (currentSelectedButton !== undefined) {
+      currentSelectedButton.disabled = false
+    }
+    currentSelectedButton = document.getElementById(name);
+    currentSelectedButton.disabled = true
+
     const nameSpan = document.getElementById("name-span");
     nameSpan.innerHTML = name
 
