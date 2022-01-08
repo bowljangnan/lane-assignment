@@ -51,12 +51,12 @@ version: v1.0.0
 <div id="statistics-div">
     <table id="weekly-statistics-table" style="width:800px">
         <thead>
-        <td>2022년 주간</td>
-        <td>게임 수</td>
-        <td>평균</td>
-        <td>최고 점수</td>
-        <td>최저 점수</td>
-        <td>게임비</td>
+            <td><b>2022년 주간</b></td>
+            <td><b>게임 수</b></td>
+            <td><b>평균</b></td>
+            <td><b>최고 점수</b></td>
+            <td><b>최저 점수</b></td>
+            <td><b>게임비</b></td>
         </thead>
     </table>
     <br><br>
@@ -270,11 +270,21 @@ version: v1.0.0
       return
     }
 
-    for (const weeklyKey of weeklyMap.keys()) {
+    for (const weeklyKey of weeklySheets) {
       const newRow = statisticsTable.insertRow(teamIndex)
       newRow.insertCell(0).innerHTML = weeklyKey
 
       const scores = weeklyMap.get(weeklyKey)
+
+      if (scores === undefined) {
+        newRow.insertCell(1).innerHTML = 0
+        newRow.insertCell(2).innerHTML = 0
+        newRow.insertCell(3).innerHTML = 0
+        newRow.insertCell(4).innerHTML = 0
+        newRow.insertCell(5).innerHTML =  "0원"
+        teamIndex++
+        continue
+      }
 
       let statistics = getWeeklyStatistics(scores)
       newRow.insertCell(1).innerHTML = statistics.gameCount
@@ -497,19 +507,19 @@ version: v1.0.0
         labels: weeklySheets,
         datasets: [
           {
-            label: '볼장난 전체 평균 참여 횟수',
+            label: '볼장난 전체 평균 게임 수',
             data: getEntireMemberParticipationResult().entireCount,
             backgroundColor: createArrayObject(colors.totalBackground, labelCount),
             borderColor: createArrayObject(colors.totalBorder, labelCount),
             borderWidth: 1
           }, {
-            label: name + ' 참여 횟수',
+            label: name + ' 게임 수',
             data: getWeeklyParticipationCountArray(name),
             backgroundColor: createArrayObject(colors.targetBackground, labelCount),
             borderColor: createArrayObject(colors.targetBorder, labelCount),
             borderWidth: 1
           }, {
-            label: '볼장난 주간 참여 횟수 1위',
+            label: '볼장난 주간 게임 수 1위',
             data: getEntireMemberParticipationResult().maxCount,
             backgroundColor: createArrayObject(colors.topBackground, labelCount),
             borderColor: createArrayObject(colors.topBorder, labelCount),
@@ -520,7 +530,7 @@ version: v1.0.0
       options: {
         title: {
           display: true,
-          text: name + ' 참여 횟수 막대 그래프'
+          text: name + ' 게임 수 분포 그래프'
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
