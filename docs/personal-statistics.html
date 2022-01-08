@@ -781,6 +781,14 @@ version: v1.0.0
     for (const weeklySheet of weeklySheets) {
       const scores = memberStatistics.get(name).get(weeklySheet)
       if (scores === undefined) {
+        continue
+      }
+      prevAverage = getWeeklyStatistics(scores).average.toFixed(2)
+    }
+
+    for (const weeklySheet of weeklySheets) {
+      const scores = memberStatistics.get(name).get(weeklySheet)
+      if (scores === undefined) {
         array.push(prevAverage)
       } else {
         const currentAverage = getWeeklyStatistics(scores).average.toFixed(2)
@@ -788,6 +796,8 @@ version: v1.0.0
         prevAverage = currentAverage
       }
     }
+
+
     return array;
   }
 
