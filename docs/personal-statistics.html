@@ -191,11 +191,6 @@ version: v1.0.0
       fetch(spreadSheetUrl, null)
         .then((response) => response.json())
         .then((data) => initializeMemberStatisticsMap(sheetName, data["values"]))
-        .then(() => {
-          if (name != null && memberStatistics.get(name) !== undefined && weeklySheetDatas.length === count) {
-            showStatistics(name)
-          }
-        })
         .catch((error) => console.log("error:", error));
     }
 
@@ -210,6 +205,7 @@ version: v1.0.0
     }
 
     weeklySheets.push(weeklyKey)
+    weeklySheets.sort()
 
     for (let index = 0; index < values.length; index++) {
       let name = convertName(values[index][0])
