@@ -193,7 +193,9 @@ version: v1.0.0
             </tr>
         </table>
     </div>
-
+</div>
+<br>
+<div style="clear:both">
     <div style="float:left;margin: 20px;width: 400px">
         <span style="font-size:15px;"><b> 에버리지 <span style="color:red">(10게임 이상)</span> </b></span><br>
         <table style="width: 100%; text-align: center">
@@ -254,6 +256,67 @@ version: v1.0.0
             </tr>
         </table>
     </div>
+
+    <div style="float:left;margin: 20px;width: 400px">
+        <span style="font-size:15px;"><b> 에버리지(여자) <span style="color:red">(10게임 이상)</span> </b></span><br>
+        <table style="width: 100%; text-align: center">
+            <thead>
+            <td><b>순위</b></td>
+            <td><b>이름(게임 수)</b></td>
+            <td><b>점수</b></td>
+            </thead>
+            <tr id="womans-average-top1" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top2" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top3" style="width: 20px; font-size: 15px;font-weight: bold">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top4" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top5" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top6" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top7" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top8" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top9" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="womans-average-top10" style="width: 20px; font-size: 15px">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
     <!--    <div style = "float:left;margin: 20px">-->
     <!--        <span style="font-size:15px;"><b> 200점 이상 횟수 </b></span><br>-->
     <!--        <table>-->
@@ -294,6 +357,7 @@ version: v1.0.0
   window.onload = initialize()
 
   const memberList = []
+  const womansList = []
 
   function initialize() {
     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/total?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
@@ -311,13 +375,14 @@ version: v1.0.0
 
   function initializeMemberList(values) {
     for (let index = 0; index < values.length; index++) {
-      let name = values[index][0]
+      let sex = values[index][0]
+      let name = values[index][1]
 
       const user = {}
       user.name = name
 
       const monthlyData = []
-      for (let valueIndex = 1; valueIndex < values[index].length; valueIndex += 4) {
+      for (let valueIndex = 2; valueIndex < values[index].length; valueIndex += 4) {
         const data = {}
         data.participationCount = values[index][valueIndex]
         data.gameCount = values[index][valueIndex + 1]
@@ -330,6 +395,11 @@ version: v1.0.0
 
       user.monthlyData = monthlyData
       memberList.push(user)
+
+      if (sex === '여') {
+        womansList.push(user)
+      }
+
     }
 
     console.log(memberList)
@@ -347,6 +417,7 @@ version: v1.0.0
     initializeGameCountRank(month)
     initializeParticipationCountRank(month)
     initializeAverageRank(month)
+    initializeWomansAverageRank(month)
   }
 
   function initializeGameCountRank(monthlyIndex) {
@@ -405,6 +476,29 @@ version: v1.0.0
     let index = 1
     for (const member of top10) {
       const row = document.getElementById("average-top" + index);
+      row.innerHTML = ''
+      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getNameTag(member.name)  + '(' + member.monthlyData[monthlyIndex].gameCount + ')</td>'
+      row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].average + '</td>'
+
+      index += 1
+    }
+  }
+
+  function initializeWomansAverageRank(monthlyIndex) {
+
+    const top10 = womansList.filter(member =>
+      member.monthlyData !== null
+      && member.monthlyData[monthlyIndex].participationCount !== ''
+      && member.monthlyData[monthlyIndex].participationCount != 0
+      && member.monthlyData[monthlyIndex].gameCount >= 10)
+      .sort((member1, member2) => member2.monthlyData[monthlyIndex].average
+        - member1.monthlyData[monthlyIndex].average)
+      .slice(0, 10)
+
+    let index = 1
+    for (const member of top10) {
+      const row = document.getElementById("womans-average-top" + index);
       row.innerHTML = ''
       row.innerHTML += '<td>' + getRankString(index) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name)  + '(' + member.monthlyData[monthlyIndex].gameCount + ')</td>'
