@@ -210,6 +210,7 @@ version: v1.0.0
     }
 
     weeklySheets.push(weeklyKey)
+    weeklySheets.sort()
 
     for (let index = 0; index < values.length; index++) {
       let name = convertName(values[index][0])
@@ -591,7 +592,7 @@ version: v1.0.0
           yAxes: [{
             display: true,
             ticks: {
-              suggestedMin: 0,
+              suggestedMin: 150,
             }
           }]
         }
@@ -781,12 +782,16 @@ version: v1.0.0
 
     const array = [];
 
+    let prevAverage = 0
     for (const weeklySheet of weeklySheets) {
       const scores = memberStatistics.get(name).get(weeklySheet)
       if (scores === undefined) {
-        continue
+        array.push(prevAverage)
+      } else {
+        const currentAverage = getWeeklyStatistics(scores).average.toFixed(2)
+        array.push(currentAverage)
+        prevAverage = currentAverage
       }
-      array.push(getWeeklyStatistics(scores).average.toFixed(2))
     }
     return array;
   }
