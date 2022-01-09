@@ -5,6 +5,7 @@ version: v1.0.0
     <link rel="shortcut icon" type="image/x-icon" href="icons/icons.ico">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KPHH0BQLN"></script>
+    <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
 
@@ -537,7 +538,7 @@ version: v1.0.0
         .reduceRight((a, b) => parseInt(a) + parseInt(b))
     }
 
-    document.getElementById("total-game-count-div").innerHTML = totalCount;
+    document.getElementById("total-game-count-div").innerHTML = totalCount.toLocaleString();
   }
 
   function initializeParticipantCount(monthlyIndex) {

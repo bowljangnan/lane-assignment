@@ -5,6 +5,7 @@ version: v1.0.0
 <title>볼장난 주간 기록 통계 조회</title>
 <head>
     <link rel="shortcut icon" type="image/x-icon" href="icons/icons.ico">
+    <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KPHH0BQLN"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,11 +20,11 @@ version: v1.0.0
     </script>
 
     <!-- Google Tag Manager -->
-<!--    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':-->
-<!--        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],-->
-<!--      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=-->
-<!--      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);-->
-<!--    })(window,document,'script','dataLayer','GTM-T2B8S7R');</script>-->
+    <!--    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':-->
+    <!--        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],-->
+    <!--      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=-->
+    <!--      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);-->
+    <!--    })(window,document,'script','dataLayer','GTM-T2B8S7R');</script>-->
     <!-- End Google Tag Manager -->
 </head>
 
@@ -58,12 +59,12 @@ version: v1.0.0
 <div id="statistics-div">
     <table id="weekly-statistics-table" style="width:800px">
         <thead>
-            <td><b>2022년 주간</b></td>
-            <td><b>게임 수</b></td>
-            <td><b>평균</b></td>
-            <td><b>최고 점수</b></td>
-            <td><b>최저 점수</b></td>
-            <td><b>게임비</b></td>
+        <td><b>2022년 주간</b></td>
+        <td><b>게임 수</b></td>
+        <td><b>평균</b></td>
+        <td><b>최고 점수</b></td>
+        <td><b>최저 점수</b></td>
+        <td><b>게임비</b></td>
         </thead>
     </table>
     <br><br>
@@ -140,7 +141,14 @@ version: v1.0.0
     if (keyword === '') {
       memberViewList = memberList.filter(() => true)
     } else {
-      memberViewList = memberList.filter((member) => member.name.includes(keyword))
+      memberViewList = memberList.filter((member) => {
+          const cho = Hangul.disassemble(member.name, true).map((cho) => cho[0]).join('')
+          const keywordCho = Hangul.disassemble(keyword).join('')
+
+          return member.name.includes(keyword)
+            || Hangul.search(cho, keywordCho) >= 0
+        }
+      )
     }
 
     const memberDiv = document.getElementById("member-div");
@@ -249,7 +257,7 @@ version: v1.0.0
   }
 
   function getMemberButtonString(member) {
-    return '<span style="padding: 5px;"><button id = ' + userButtonPrefix  + member.name + ' name= ' + member.name + ' onclick="showStatistics(this.name)" disabled>' + getMemberNameString(member) + '</button></span>'
+    return '<span style="padding: 5px;"><button id = ' + userButtonPrefix + member.name + ' name= ' + member.name + ' onclick="showStatistics(this.name)" disabled>' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
@@ -257,7 +265,7 @@ version: v1.0.0
   }
 
   function showStatistics(name) {
-    gtag('event', '유저 조회 이벤트', { 'event_category' : name, 'event_label' : name})
+    gtag('event', '유저 조회 이벤트', {'event_category': name, 'event_label': name})
 
     if (currentSelectedButton !== undefined) {
       currentSelectedButton.disabled = false
@@ -300,7 +308,7 @@ version: v1.0.0
         newRow.insertCell(2).innerHTML = 0
         newRow.insertCell(3).innerHTML = 0
         newRow.insertCell(4).innerHTML = 0
-        newRow.insertCell(5).innerHTML =  "0원"
+        newRow.insertCell(5).innerHTML = "0원"
         teamIndex++
         continue
       }
@@ -637,7 +645,7 @@ version: v1.0.0
           "200", "210", "220", "230", "240", "250", "260", "270", "280", "290",
         ],
         datasets: [{
-          label: name + ' 에버리지 포함 구간(' + targetAverage  + ')',
+          label: name + ' 에버리지 포함 구간(' + targetAverage + ')',
           data: getAllMemberAverageDistributionData(),
           backgroundColor: getAllMemberAverageChartBackgroundColor(targetAverage),
           borderColor: getAllMemberAverageChartBorderColor(targetAverage),
@@ -719,9 +727,9 @@ version: v1.0.0
   }
 
   function getAllMemberAverageChartBackgroundColor(targetAverage) {
-    let array = [ 'rgba(245, 99, 132, 0.2)' ]
+    let array = ['rgba(245, 99, 132, 0.2)']
 
-    for (let i=1; i<30; i++) {
+    for (let i = 1; i < 30; i++) {
       if (parseInt(targetAverage / 10) === i) {
         array.push('rgba(245, 99, 132, 0.2)')
         continue;
@@ -732,8 +740,8 @@ version: v1.0.0
   }
 
   function getAllMemberAverageChartBorderColor(targetAverage) {
-    let array = [ 'rgba(255,99,132,1)' ]
-    for (let i=1; i<30; i++) {
+    let array = ['rgba(255,99,132,1)']
+    for (let i = 1; i < 30; i++) {
       if (parseInt(targetAverage / 10) === i) {
         array.push('rgba(255,99,132,1)',)
         continue;
