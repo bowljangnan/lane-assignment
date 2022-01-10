@@ -875,6 +875,7 @@ version: v1.0.0
     for (const weeklySheet of weeklySheets) {
       const scores = memberStatistics.get(name).get(weeklySheet);
       if (scores === undefined) {
+        array.push(0)
         continue;
       }
       array.push(scores.length)
