@@ -579,35 +579,45 @@ version: v1.0.0
     const labelCount = weeklySheets.length
 
     participationChart = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: weeklySheets,
         datasets: [
           {
             label: '볼장난 전체 평균 게임 수',
             data: getEntireMemberParticipationResult().entireCount,
-            backgroundColor: createArrayObject(colors.totalBackground, labelCount),
-            borderColor: createArrayObject(colors.totalBorder, labelCount),
-            borderWidth: 1
+            backgroundColor: colors.totalBackground,
+              // createArrayObject(colors.totalBackground, labelCount),
+            borderColor: colors.totalBorder,
+              //createArrayObject(colors.totalBorder, labelCount),
+            fill: false,
+            lineTension: 0,
           }, {
             label: name + ' 게임 수',
             data: getWeeklyParticipationCountArray(name),
-            backgroundColor: createArrayObject(colors.targetBackground, labelCount),
-            borderColor: createArrayObject(colors.targetBorder, labelCount),
-            borderWidth: 1
-          }, {
-            label: '볼장난 주간 게임 수 1위',
-            data: getEntireMemberParticipationResult().maxCount,
-            backgroundColor: createArrayObject(colors.topBackground, labelCount),
-            borderColor: createArrayObject(colors.topBorder, labelCount),
-            borderWidth: 1
+            backgroundColor: colors.targetBackground,
+              //createArrayObject(colors.targetBackground, labelCount),
+            borderColor: colors.targetBorder,
+              // createArrayObject(colors.targetBorder, labelCount),
+            fill: false,
+            lineTension: 0
           },
+          // {
+          //   label: '볼장난 주간 게임 수 1위',
+          //   data: getEntireMemberParticipationResult().maxCount,
+          //   backgroundColor: colors.topBackground,
+          //     // createArrayObject(colors.topBackground, labelCount),
+          //   borderColor: colors.topBorder,
+          //     // createArrayObject(colors.topBorder, labelCount),
+          //   fill: false,
+          //   lineTension: 0,
+          // },
         ]
       },
       options: {
         title: {
           display: true,
-          text: name + ' 게임 수 분포 그래프'
+          text: name + ' 게임 수 그래프'
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
@@ -647,14 +657,15 @@ version: v1.0.0
             borderColor: colors.targetBorder,
             fill: false,
             lineTension: 0
-          }, {
-            label: '볼장난 주간 에버리지 1위',
-            data: getEntireMemberAverageResult().maxAverage,
-            backgroundColor: colors.topBackground,
-            borderColor: colors.topBorder,
-            fill: false,
-            lineTension: 0
           },
+          // {
+          //   label: '볼장난 주간 에버리지 1위',
+          //   data: getEntireMemberAverageResult().maxAverage,
+          //   backgroundColor: colors.topBackground,
+          //   borderColor: colors.topBorder,
+          //   fill: false,
+          //   lineTension: 0
+          // },
         ]
       },
       options: {
