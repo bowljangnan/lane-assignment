@@ -252,7 +252,7 @@ version: v1.0.0
 
     const members = []
     for (const key of memberStatistics.keys()) {
-      let member = { }
+      let member = {}
       const userWeeklyScores = memberStatistics.get(key).get(weeklyKey)
       member.average = 0
       member.name = key
@@ -283,6 +283,8 @@ version: v1.0.0
 
   function showStatistics(name) {
     gtag('event', '개인 기록 조회 - ' + name, {'event_category': name, 'event_label': name})
+
+    console.log(getRival(name))
 
     if (currentSelectedButton !== undefined) {
       currentSelectedButton.disabled = false
@@ -428,7 +430,13 @@ version: v1.0.0
       }
     }
 
-    return {"total" : total, "average": total / count, "count": count, "max": maxScore, "min": minScore}
+    return {
+      "total": total,
+      "average": total / count,
+      "count": count,
+      "max": maxScore,
+      "min": minScore
+    }
   }
 
   function drawChart(name) {
@@ -445,7 +453,7 @@ version: v1.0.0
       averageChart.destroy();
     }
 
-    if (rankChart!== undefined && rankChart != null) {
+    if (rankChart !== undefined && rankChart != null) {
       rankChart.destroy();
     }
 
@@ -587,18 +595,18 @@ version: v1.0.0
             label: '볼장난 전체 평균 게임 수',
             data: getEntireMemberParticipationResult().entireCount,
             backgroundColor: colors.totalBackground,
-              // createArrayObject(colors.totalBackground, labelCount),
+            // createArrayObject(colors.totalBackground, labelCount),
             borderColor: colors.totalBorder,
-              //createArrayObject(colors.totalBorder, labelCount),
+            //createArrayObject(colors.totalBorder, labelCount),
             fill: false,
             lineTension: 0,
           }, {
             label: name + ' 게임 수',
             data: getWeeklyParticipationCountArray(name),
             backgroundColor: colors.targetBackground,
-              //createArrayObject(colors.targetBackground, labelCount),
+            //createArrayObject(colors.targetBackground, labelCount),
             borderColor: colors.targetBorder,
-              // createArrayObject(colors.targetBorder, labelCount),
+            // createArrayObject(colors.targetBorder, labelCount),
             fill: false,
             lineTension: 0
           },
@@ -703,13 +711,13 @@ version: v1.0.0
       data: {
         labels: weeklySheets,
         datasets: [{
-            label: name + ' 주간 순위',
-            data: getWeeklyRankData(name),
-            backgroundColor: colors.targetBackground,
-            borderColor: colors.targetBorder,
-            fill: false,
-            lineTension: 0
-          }
+          label: name + ' 주간 순위',
+          data: getWeeklyRankData(name),
+          backgroundColor: colors.targetBackground,
+          borderColor: colors.targetBorder,
+          fill: false,
+          lineTension: 0
+        }
         ]
       },
       options: {
@@ -923,9 +931,14 @@ version: v1.0.0
 
     const array = [];
 
+    const userWeeklyMap = memberStatistics.get(name)
+    if (userWeeklyMap === undefined) {
+      return []
+    }
+
     let prevAverage = 0
     for (const weeklySheet of weeklySheets) {
-      const scores = memberStatistics.get(name).get(weeklySheet)
+      const scores = userWeeklyMap.get(weeklySheet)
       if (scores === undefined) {
         continue
       }
@@ -933,7 +946,7 @@ version: v1.0.0
     }
 
     for (const weeklySheet of weeklySheets) {
-      const scores = memberStatistics.get(name).get(weeklySheet)
+      const scores = userWeeklyMap.get(weeklySheet)
       if (scores === undefined) {
         array.push(prevAverage)
       } else {
@@ -945,6 +958,89 @@ version: v1.0.0
 
 
     return array;
+  }
+
+  function getRival(name) {
+    let rival
+    let maxSimilarity = -1
+    for (const other of memberList) {
+      if (other.name === name) {
+        continue
+      }
+
+      let similarity = getAverageSimilarity(name, other.name)
+      if (similarity > maxSimilarity) {
+        maxSimilarity = similarity
+        rival = other.name
+      }
+    }
+
+    console.log(maxSimilarity)
+    return rival
+  }
+
+  function getAverageSimilarity(user1, user2) {
+
+    const user1WeeklyAverages = getWeeklyAverage(user1)
+    const user2WeeklyAverages = getWeeklyAverage(user2)
+
+    return getEuclideanSimilarity(user1WeeklyAverages, user2WeeklyAverages)
+  }
+
+  function getPiersonSimilarity(arrA, arrB) {
+    const averageA = getAverage(arrA)
+    const averageB = getAverage(arrB)
+
+    const nomalizedA = []
+    const nomalizedB = []
+    for (let i = 0; i < arrA.length; i++) {
+      nomalizedA.push(arrA[i] - 150)
+      nomalizedB.push(arrB[i] - 150)
+    }
+
+    let sumOfNomalizedA = 0
+    let sumOfNomalizedB = 0
+    let sumOfProduct = 0
+
+    for (let i = 0; i < nomalizedA.length; i++) {
+      sumOfNomalizedA += nomalizedA[i] * nomalizedA[i]
+      sumOfNomalizedB += nomalizedB[i] * nomalizedB[i]
+      sumOfProduct += nomalizedA[i] * nomalizedB[i]
+    }
+
+    return sumOfProduct / (Math.sqrt(sumOfNomalizedA) * Math.sqrt(sumOfNomalizedB))
+  }
+
+  function getCosineSimilarity(arrA, arrB) {
+    let sumOfNomalizedA = 0
+    let sumOfNomalizedB = 0
+    let sumOfProduct = 0
+
+    for (let i = 0; i < arrA.length; i++) {
+      sumOfNomalizedA += parseInt(arrA[i]) * parseInt(arrA[i])
+      sumOfNomalizedB += parseInt(arrB[i]) * parseInt(arrB[i])
+      sumOfProduct += parseInt(arrA[i]) * parseInt(arrB[i])
+    }
+
+    return sumOfProduct / (Math.sqrt(sumOfNomalizedA) * Math.sqrt(sumOfNomalizedB))
+  }
+
+  function getEuclideanSimilarity(arrA, arrB) {
+    let sumOfDiff = 0
+
+    for (let i = 0; i < arrA.length; i++) {
+      sumOfDiff += Math.pow(parseInt(arrA[i]) - parseInt(arrB[i]), 2)
+    }
+
+    return 1 / (sumOfDiff + 1)
+  }
+
+
+  function getAverage(arr) {
+    if (arr.length === 0) {
+      return 0
+    }
+    return arr.reduce((a, b) => parseInt(a) + parseInt(b)) / arr.length
   }
 
   function getWeeklyRankData(name) {
