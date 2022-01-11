@@ -105,17 +105,7 @@ version: v1.0.0
       .then((response) => response.json())
       .then((data) => initializeMemberMap(data["values"]))
       .then(() => {
-        initializeMemberStatistics().then(() => {
-          setTimeout(() => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const name = convertName(urlParams.get('name'));
-            console.log("name: " + name)
-            console.log("memberStatistics: " + memberStatistics.get(name))
-            if (name != null && memberStatistics.get(name) !== undefined) {
-              showStatistics(name)
-            }
-          }, 1000)
-        })
+        initializeMemberStatistics()
       })
       .catch((error) => console.log("error:", error))
 
@@ -208,11 +198,12 @@ version: v1.0.0
 
       const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
-      count++;
       fetch(spreadSheetUrl, null)
         .then((response) => response.json())
-        .then((data) => initializeMemberStatisticsMap(sheetName, data["values"]))
+        .then((data) => initializeMemberStatisticsMap(sheetName, data["values"], count, weeklySheetDatas.length))
         .catch((error) => console.log("error:", error));
+
+      count++;
     }
 
     return new Promise(function (resolve) {
@@ -220,7 +211,7 @@ version: v1.0.0
     });
   }
 
-  function initializeMemberStatisticsMap(weeklyKey, values) {
+  function initializeMemberStatisticsMap(weeklyKey, values, count, until) {
     if (values === undefined || values.length === 0) {
       return
     }
@@ -269,6 +260,12 @@ version: v1.0.0
     weeklyAverageRank.set(weeklyKey, members)
 
     disableUnrecordUserButton()
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = convertName(urlParams.get('name'));
+    if (count === until) {
+      showStatistics(name)
+    }
 
     return new Promise(function (resolve) {
       resolve()
