@@ -264,7 +264,9 @@ version: v1.0.0
     const urlParams = new URLSearchParams(window.location.search);
     const name = convertName(urlParams.get('name'));
     if (count === until) {
-      showStatistics(name)
+      if (name !== null && memberStatistics.get(name) !== undefined) {
+        showStatistics(name)
+      }
     }
 
     return new Promise(function (resolve) {
