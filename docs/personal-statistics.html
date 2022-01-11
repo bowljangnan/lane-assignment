@@ -109,6 +109,8 @@ version: v1.0.0
           setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);
             const name = convertName(urlParams.get('name'));
+            console.log("name: " + name)
+            console.log("memberStatistics: " + memberStatistics.get(name))
             if (name != null && memberStatistics.get(name) !== undefined) {
               showStatistics(name)
             }
@@ -1058,7 +1060,6 @@ version: v1.0.0
         background: grey;
         color: white;
     }
-
     table, th, td {
         padding: 10px;
         border: 1px solid black;
