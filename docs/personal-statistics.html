@@ -5,7 +5,9 @@ version: v1.0.0
 <title>볼장난 주간 기록 통계 조회</title>
 <head>
     <link rel="shortcut icon" type="image/x-icon" href="icons/icons.ico">
+    <link rel="stylesheet" type="text/css" href="css/button.css">
     <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+    <script src="js/common-utils.js" type="text/javascript"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KPHH0BQLN"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -116,8 +118,8 @@ version: v1.0.0
 
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
-      let name = values[index][0]
-      memberList.push({"name": convertName(name)})
+      const member = getMemberObject(values[index])
+      memberList.push(member)
     }
     memberViewList = memberList.filter(() => true)
 
@@ -275,7 +277,8 @@ version: v1.0.0
   }
 
   function getMemberButtonString(member) {
-    return '<span style="padding: 5px;"><button id = ' + userButtonPrefix + member.name + ' name= ' + member.name + ' onclick="showStatistics(this.name)" disabled>' + getMemberNameString(member) + '</button></span>'
+    const btnClass = getButtonClass(member)
+    return '<span style="padding: 5px;"><button id = ' + userButtonPrefix + member.name + ' name= ' + member.name + ' class="' + btnClass + '"onclick="showStatistics(this.name)" disabled>' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
@@ -1033,7 +1036,7 @@ version: v1.0.0
   }
 
   function convertName(name) {
-    return name === '노유한' ? '노유👑' : name
+    return name === '노유한' ? '노유한' : name
   }
 
 </script>
