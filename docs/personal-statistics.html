@@ -47,7 +47,7 @@ version: v1.0.0
 <span style="font-size:30px;"><b> - 개인 주간 기록 조회: <b><span id="name-span"
                                                           style="font-size:30px; color:blue;"></span></b> - </b></span>
 <br><br>
-<div id="profile-area-div" style="width:800px;text-align: center; display: none;">
+<div id="profile-area-div" style="width:1040px;text-align: center; display: none;">
     <div id="profile-div" style="background-image: url(profiles/default.png);
         background-repeat : no-repeat;
         background-size: cover;
@@ -60,8 +60,8 @@ version: v1.0.0
     <span id="profile-guide-div" style="font-size:12px;color:red;"><b>멋있는 프로필 사진으로 변경하고 싶으신가요? 지금 노유👑에게 문의하세요!</b></span>
 </div>
 <br>
-<div id="statistics-div">
-    <table id="weekly-statistics-table" style="width:800px">
+<div id="statistics-div" style="width: 1040px">
+    <table id="weekly-statistics-table" style="width:1000px;font-size: 20px">
         <thead>
         <td><b>2022년 주간</b></td>
         <td><b>게임 수</b></td>
@@ -73,7 +73,7 @@ version: v1.0.0
         </thead>
     </table>
     <br><br>
-    <div id='chart-div' style="width:800px;font-size:20px;color:red">
+    <div id='chart-div' style="width:1000px;font-size:30px;color:red">
     </div>
 </div>
 
@@ -568,7 +568,8 @@ version: v1.0.0
       options: {
         title: {
           display: true,
-          text: name + ' 점수 분포도'
+          text: '[ ' + name + ' 점수 분포도 ]',
+          fontSize: 25
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
@@ -630,7 +631,8 @@ version: v1.0.0
       options: {
         title: {
           display: true,
-          text: name + ' 게임 수 그래프'
+          text: '[ ' + name + ' 게임 수 그래프 ]',
+          fontSize: 25
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
@@ -684,7 +686,8 @@ version: v1.0.0
       options: {
         title: {
           display: true,
-          text: name + ' 주간 에버리지 변화 그래프'
+          text: '[ ' + name + ' 주간 에버리지 변화 그래프 ]',
+          fontSize: 25
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         hover: {
@@ -728,7 +731,8 @@ version: v1.0.0
       options: {
         title: {
           display: true,
-          text: name + ' 주간 순위 변화 그래프'
+          text: '[ ' + name + ' 주간 순위 변화 그래프 ]',
+          fontSize: 25
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         hover: {
@@ -777,7 +781,8 @@ version: v1.0.0
       options: {
         title: {
           display: true,
-          text: '볼장난 전체 멤버 에버리지 분포도'
+          text: '[ 볼장난 전체 멤버 에버리지 분포도 ]',
+          fontSize: 25
         },
         maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
         scales: {
