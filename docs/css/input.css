@@ -1,9 +1,9 @@
 .input-search-bar {
     width: 500px;
-    height: 50px;
+    height: 70px;
     border-top: none;
     border-left: none;
     border-right: none;
     border-bottom: 3px solid black;
-    font-size: 30px;
+    font-size: 50px;
 }
