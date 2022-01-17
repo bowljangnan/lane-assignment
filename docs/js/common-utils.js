@@ -8,6 +8,10 @@ function getMemberObject(value) {
   return member
 }
 
+function getDisabledButtonClass(member) {
+  return 'w-btn-disabled w-btn-gray-disabled'
+}
+
 function getButtonClass(member) {
   if (member.name === '노유한') {
     return 'w-btn w-btn-gra3 w-btn-gra-anim';

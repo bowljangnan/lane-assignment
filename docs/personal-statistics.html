@@ -179,10 +179,11 @@ version: v1.0.0
   }
 
   function disableUnrecordUserButton() {
-    for (const memberName of memberViewList) {
-      const userMap = memberStatistics.get(memberName.name)
+    for (const member of memberViewList) {
+      const userMap = memberStatistics.get(member.name)
       if (userMap !== undefined && userMap.size !== 0) {
-        document.getElementById(userButtonPrefix + memberName.name).disabled = false;
+        document.getElementById(userButtonPrefix + member.name).disabled = false;
+        document.getElementById(userButtonPrefix + member.name).className = getButtonClass(member)
       }
     }
 
@@ -277,8 +278,8 @@ version: v1.0.0
   }
 
   function getMemberButtonString(member) {
-    const btnClass = getButtonClass(member)
-    return '<span style="padding: 5px;"><button id = ' + userButtonPrefix + member.name + ' name= ' + member.name + ' class="' + btnClass + '"onclick="showStatistics(this.name)" disabled>' + getMemberNameString(member) + '</button></span>'
+    // const btnClass = getButtonClass(member)
+    return '<span style="padding: 5px;"><button id = ' + userButtonPrefix + member.name + ' name= ' + member.name + ' class="w-btn-disabled w-btn-gray-disabled"onclick="showStatistics(this.name)" disabled>' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
@@ -289,10 +290,16 @@ version: v1.0.0
     gtag('event', '개인 기록 조회 - ' + name, {'event_category': name, 'event_label': name})
 
     if (currentSelectedButton !== undefined) {
+      const member = memberList.find((member) => member.name === currentSelectedButton.name)
       currentSelectedButton.disabled = false
+      currentSelectedButton.className = getButtonClass(member)
     }
+
+    const member = memberList.find((member) => member.name === name)
+
     currentSelectedButton = document.getElementById(userButtonPrefix + name);
     currentSelectedButton.disabled = true
+    currentSelectedButton.className = getDisabledButtonClass(member)
 
     const nameSpan = document.getElementById("name-span");
     nameSpan.innerHTML = name
