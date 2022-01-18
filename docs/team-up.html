@@ -1,8 +1,7 @@
-version: v1.0.2
-<span style="font-size:20px;margin-left: 10px"><b><a href="index.html">메인으로 이동</a></b></span> <br><br>
 <title>볼장난 팀 나누기</title>
 <head>
     <link rel="shortcut icon" type="image/x-icon" href="icons/icons.ico">
+    <link rel="stylesheet" type="text/css" href="css/header.css">
     <link rel="stylesheet" type="text/css" href="css/button.css">
     <link rel="stylesheet" type="text/css" href="css/input.css">
 
@@ -10,7 +9,11 @@ version: v1.0.2
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KPHH0BQLN"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
       gtag('js', new Date());
 
       gtag('config', 'G-2KPHH0BQLN');
@@ -20,39 +23,54 @@ version: v1.0.2
     <script src="js/common-utils.js" type="text/javascript"></script>
 </head>
 
-<span style="font-size:20px;"><b> - 볼장난 전체 인원 - </b></span><br>
+<header>
+    <span>
+        <button type="button" class="w-btn-outline w-btn-gray-outline" onclick="location.href='index.html'">메인으로 이동</button>
+    </span>
+</header>
+
+<body>
 <span style="font-size:15px;color:red"><b>* 버튼을 누르면 참가자 목록에 추가됩니다</b></span><br><br>
 <div style="font-size:20px;margin-bottom: 20px">
     <input id="search-input" class="input-search-bar" onchange="changeMemberView()"
-               placeholder="이름을 검색하세요"/>
+           placeholder="이름을 검색하세요"/>
 </div>
 <div id="member-div">
 
 </div>
 <br><br><br>
 
-<span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span" style="font-size:20px;color:red">0</span>명 - </b></span><br>
+<span style="font-size:20px;"><b> - 정모 참가 인원: <span id="participant-count-span"
+                                                    style="font-size:20px;color:red">0</span>명 - </b></span><br>
 <span style="font-size:15px;color:red"><b>* 버튼을 누르면 참가자 목록에 제거됩니다</b></span><br><br>
-<button style="width:200px;height:50px;font-size:20px;" onclick="clearParticipant()">참여 인원 전체 삭제</button><br><br>
+<button class="w-btn-neon2" style="width:300px;height:70px;font-size:20px;"
+        onclick="clearParticipant()">참여 인원 전체 삭제
+</button>
+<br><br>
 <div id="participant-div">
 
 </div>
 <br>
 <br>
-<span style="font-size:20px;"><b> ---------------------------------------------------------- </b></span><br>
+<hr>
+<br>
+<br>
 <div>
     <span style="width:200px;height:50px;font-size:20px;">
-        <select id="team-count-select" style="width:100px;height:50px;font-size:25px;align-content: center">
-            <option selected>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-        </select> 개 팀 으로 나누기
+        <select id="team-count-select"
+                style="width:300px;height:80px;font-size:25px;align-content: center">
+            <option selected value="2">2개 팀 으로 나누기</option>
+            <option value="3">3개 팀 으로 나누기</option>
+            <option value="4">4개 팀 으로 나누기</option>
+            <option value="5">5개 팀 으로 나누기</option>
+            <option value="6">6개 팀 으로 나누기</option>
+            <option value="7">7개 팀 으로 나누기</option>
+            <option value="8">8개 팀 으로 나누기</option>
+        </select>
     </span> <br><br>
-    <button style="width:200px;height:50px;font-size:20px;" onclick="divideTeam()">팀 나누기 실행</button>
+    <button class="w-btn-neon2" style="width:300px;height:70px;font-size:20px;"
+            onclick="divideTeam()">팀 나누기 실행
+    </button>
 </div>
 
 <br>
@@ -71,9 +89,20 @@ version: v1.0.2
 <span style="font-size:15px;color:red"><b>* 그럴 경우 적절하게 직접 조정해서 사용하시면 됩니다. 어디까지나 자동 계산된 핸디는 참고용입니다.</b></span><br><br>
 <div id="team-div">
     <table id="team-table">
-        <thead><td></td> <td>팀 합산</td> <td>팀원</td> <td>추천핸디 <button onclick="guideRecommendHandicapScore()">추천 핸디란?</button></td></thead>
+        <thead>
+        <td></td>
+        <td>팀 합산</td>
+        <td>팀원</td>
+        <td>추천핸디
+            <button onclick="guideRecommendHandicapScore()">추천 핸디란?</button>
+        </td>
+        </thead>
     </table>
 </div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+
+
 <script>
   window.onload = initialize()
 
@@ -110,7 +139,7 @@ version: v1.0.2
   }
 
   function getNohyooKingValue(name) {
-    return name === "노유한" ? "노유한" :  name
+    return name === "노유한" ? "노유한" : name
   }
 
   function changeMemberView() {
@@ -143,8 +172,8 @@ version: v1.0.2
     let index = 0
     for (const member of memberViewList) {
       memberDiv.innerHTML += getMemberButtonString(member)
-      if ((index+1) % 8 === 0) {
-        memberDiv.innerHTML+= '<br><br>'
+      if ((index + 1) % 8 === 0) {
+        memberDiv.innerHTML += '<br><br>'
       }
       index++
     }
@@ -194,8 +223,8 @@ version: v1.0.2
       const participant = participantMap.get(key)
 
       participantDiv.innerHTML += getParticipateButtonString(participant)
-      if ((index+1) % 8 === 0) {
-        participantDiv.innerHTML+= '<br><br>'
+      if ((index + 1) % 8 === 0) {
+        participantDiv.innerHTML += '<br><br>'
       }
       index++
     }
@@ -214,7 +243,7 @@ version: v1.0.2
     for (let keyIndex = 0; keyIndex < keys.length; keyIndex += teamCount) {
       let group = []
       for (let groupCount = 1; groupCount <= teamCount; groupCount++) {
-        const participant = participantMap.get(keys[keyIndex+groupCount-1])
+        const participant = participantMap.get(keys[keyIndex + groupCount - 1])
         if (participant === undefined) {
           break
         }
@@ -241,7 +270,7 @@ version: v1.0.2
     let str = ''
     str += seedNumber++ + ' 시드: '
     for (const participant of group) {
-      let handicapStr = participant.handicap !== 0 ?'(' + participant.handicap + ')' : ''
+      let handicapStr = participant.handicap !== 0 ? '(' + participant.handicap + ')' : ''
       str += participant.name + handicapStr + ' '
     }
     str += '<br>'
@@ -257,7 +286,9 @@ version: v1.0.2
       for (let participant of group) {
         participant.handicap = 0
       }
-      return new Promise(function(resolve) { resolve() });
+      return new Promise(function (resolve) {
+        resolve()
+      });
     }
 
     const averageOfGroup = sumOfTeamScore(group) / group.length
@@ -285,7 +316,9 @@ version: v1.0.2
       }
     }
 
-    return new Promise(function(resolve) { resolve() });
+    return new Promise(function (resolve) {
+      resolve()
+    });
   }
 
   function calculateHandicapByTier(group) {
@@ -311,7 +344,9 @@ version: v1.0.2
       }
     })
 
-    return new Promise(function(resolve) { resolve() });
+    return new Promise(function (resolve) {
+      resolve()
+    });
   }
 
   function getHighestTierInGroup(group) {
@@ -352,7 +387,7 @@ version: v1.0.2
 
         let participant = group[count]
         if (participant === undefined) {
-          participant = { "name" : "가상유저", "score" : 0, "handicap": averageOfGroup }
+          participant = {"name": "가상유저", "score": 0, "handicap": averageOfGroup}
         }
         team.push(participant)
       }
@@ -382,9 +417,9 @@ version: v1.0.2
 
   function getHandicapScoreString(score) {
     if (score > 0) {
-      return '+' +  score
+      return '+' + score
     } else {
-      return '' +  score
+      return '' + score
     }
   }
 
@@ -406,7 +441,7 @@ version: v1.0.2
   }
 
   function getKeys() {
-    return Array.from( participantMap.keys() ).sort(function (a, b) {
+    return Array.from(participantMap.keys()).sort(function (a, b) {
       return a - b;
     });
   }
@@ -445,10 +480,10 @@ version: v1.0.2
         background: grey;
         color: white;
     }
+
     table, th, td {
         padding: 10px;
         border: 1px solid black;
         border-collapse: collapse;
     }
 </style>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

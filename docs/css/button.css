@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
 
 .w-btn {
-    position: relative;
     border: none;
     display: inline-block;
     padding: 15px 30px;
@@ -17,7 +16,6 @@
 }
 
 .w-btn-disabled {
-    position: relative;
     border: none;
     display: inline-block;
     padding: 15px 30px;
@@ -32,7 +30,6 @@
 }
 
 .w-btn-outline {
-    position: relative;
     padding: 15px 30px;
     border-radius: 15px;
     font-family: "paybooc-Light", sans-serif;
@@ -306,7 +303,6 @@
 }
 
 .w-btn-neon2 {
-    position: relative;
     border: none;
     min-width: 200px;
     min-height: 50px;
