@@ -12,7 +12,7 @@
     font-weight: 600;
     transition: 0.25s;
     width: 110px;
-    height: 50px
+    height: 50px;
 }
 
 .w-btn-disabled {
@@ -133,6 +133,37 @@
     background-color: #e93b05;
     color: #e1eef6;
 }
+
+.w-btn-1tier {
+    background-color: #cb8a90;
+    color: #e1eef6;
+}
+
+.w-btn-2tier {
+    background-color: #f6b99d;
+    color: #e1eef6;
+}
+
+.w-btn-3tier {
+    background-color: #eecfbb;
+    color: #6e6e6e;
+}
+
+.w-btn-4tier {
+    background-color: #eadb80;
+    color: #6e6e6e;
+}
+
+.w-btn-5tier {
+    background-color: #6eceda;
+    color: #d4dfe6;
+}
+
+.w-btn-6tier {
+    background-color: #83b1c9;
+    color: #d4dfe6;
+}
+
 
 .w-btn-orange {
     background-color: #f1683f;
