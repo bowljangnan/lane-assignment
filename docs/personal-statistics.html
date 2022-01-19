@@ -127,7 +127,7 @@
 
   function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
-      const member = getMemberObject(values[index])
+      const member = getMemberObject(values[index], index)
       memberList.push(member)
     }
     memberViewList = memberList.filter(() => true)

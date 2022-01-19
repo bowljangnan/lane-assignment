@@ -1,8 +1,9 @@
-function getMemberObject(value) {
+function getMemberObject(value, index) {
   let member = { }
   member.name = value[0]
   member.score = parseInt(value[1])
   member.tier = parseInt(value[2])
+  member.id = parseInt(index)
   member.handicap = 0
 
   return member
@@ -16,6 +17,11 @@ function getButtonClass(member) {
   if (member.name === '노유한') {
     return 'w-btn w-btn-nyking w-btn-gra-anim';
   }
+
+  if (member.id === 0) {
+    return 'w-btn w-btn-top1 w-btn-gra-anim';
+  }
+
   switch (member.tier) {
     case 1:
       return 'w-btn w-btn-red'

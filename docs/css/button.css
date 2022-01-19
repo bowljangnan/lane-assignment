@@ -291,6 +291,48 @@
     color: white;
 }
 
+.w-btn-top1 {
+    background: linear-gradient(
+            45deg,
+            #ff0000,
+            #ff5232,
+            #ff7b5a,
+            #ff9e81,
+            #ffbfaa,
+            #ffdfd4,
+            #ffffff,
+            #ff0000,
+            #ff5232,
+            #ff7b5a,
+            #ff9e81,
+            #ffbfaa,
+            #ffdfd4,
+            #ffffff,
+            #ff0000,
+            #ff5232,
+            #ff7b5a,
+            #ff9e81,
+            #ffbfaa,
+            #ffdfd4,
+            #ffffff,
+            #ff0000,
+            #ff5232,
+            #ff7b5a,
+            #ff9e81,
+            #ffbfaa,
+            #ffdfd4,
+            #ffffff,
+            #ff0000,
+            #ff5232,
+            #ff7b5a,
+            #ff9e81,
+            #ffbfaa,
+            #ffdfd4,
+            #ffffff
+    );
+    color: white;
+}
+
 .w-btn-nyking {
     background: linear-gradient(
             45deg,
