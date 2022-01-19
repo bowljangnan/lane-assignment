@@ -14,7 +14,7 @@ function getDisabledButtonClass(member) {
 
 function getButtonClass(member) {
   if (member.name === '노유한') {
-    return 'w-btn w-btn-gra3 w-btn-gra-anim';
+    return 'w-btn w-btn-nyking w-btn-gra-anim';
   }
   switch (member.tier) {
     case 1:

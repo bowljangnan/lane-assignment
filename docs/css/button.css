@@ -291,6 +291,48 @@
     color: white;
 }
 
+.w-btn-nyking {
+    background: linear-gradient(
+            45deg,
+            #ffd700,
+            #ffdd4c,
+            #ffe474,
+            #ffea98,
+            #fff1ba,
+            #fff8dd,
+            #ffffff,
+            #ffd700,
+            #ffdd4c,
+            #ffe474,
+            #ffea98,
+            #fff1ba,
+            #fff8dd,
+            #ffffff,
+            #ffd700,
+            #ffdd4c,
+            #ffe474,
+            #ffea98,
+            #fff1ba,
+            #fff8dd,
+            #ffffff,
+            #ffd700,
+            #ffdd4c,
+            #ffe474,
+            #ffea98,
+            #fff1ba,
+            #fff8dd,
+            #ffffff,
+            #ffd700,
+            #ffdd4c,
+            #ffe474,
+            #ffea98,
+            #fff1ba,
+            #fff8dd,
+            #ffffff
+    );
+    color: black;
+}
+
 .w-btn-gra-anim {
     background-size: 400% 400%;
     animation: gradient1 5s ease infinite;
