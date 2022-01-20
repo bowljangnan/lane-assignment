@@ -6,16 +6,34 @@ function getMemberObject(value, index) {
   member.id = parseInt(index)
   member.handicap = 0
 
+  const perfectMember = findPerfectMember(member.name)
+  member.isPerfect = false
+  if (perfectMember !== undefined) {
+    member.isPerfect = isRecentlyPerfect(perfectMember)
+  }
+
   return member
 }
 
-function getDisabledButtonClass(member) {
+function isRecentlyPerfect(perfect) {
+  const date = perfect.date
+  const now = new Date();
+  const lastMonth = new Date(now.setMonth(now.getMonth() - 1));
+
+  return (date.getTime() - lastMonth.getTime()) > 0;
+}
+
+function getDisabledButtonClass() {
   return 'w-btn-disabled w-btn-gray-disabled'
 }
 
 function getButtonClass(member) {
   if (member.name === '노유한') {
     return 'w-btn w-btn-nyking w-btn-gra-anim';
+  }
+
+  if (member.isPerfect) {
+    return 'w-btn w-btn-gra3 w-btn-gra-anim';
   }
 
   if (member.id === 0) {
@@ -42,4 +60,16 @@ function getButtonClass(member) {
   }
 
   return 'w-btn w-btn-indigo'
+}
+
+function getDateFormatString(date) {
+  try {
+    return date.toISOString().split('T')[0]
+  } catch (e) {
+    return ''
+  }
+}
+
+function findPerfectMember(name) {
+  return perfectMembers.find(member => member.name === name)
 }
