@@ -183,16 +183,16 @@
 
   function getMemberButtonString(member) {
     const btnClass = getButtonClass(member)
-    return '<span style="padding: 5px"><button id=' + member.id + ' style="height:60px" class ="' + btnClass + '" onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
+    return '<span style="padding: 5px"><button id=' + member.id + ' style="font-size:12px; height:60px" class ="' + btnClass + '" onclick="participateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
   }
 
   function getParticipateButtonString(member) {
     const btnClass = getButtonClass(member)
-    return '<span style="padding: 5px;height:70px"><button id=' + member.id + ' style="height:60px"  class ="' + btnClass + '" onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
+    return '<span style="padding: 5px;height:70px"><button id=' + member.id + ' style="font-size:11px; height:60px"  class ="' + btnClass + '" onclick="removeParticipateMember(this.id)">' + getMemberNameString(member) + '</button></span>'
   }
 
   function getMemberNameString(member) {
-    return member.name + '\n(' + member.score + ')';
+    return member.name + '<br>(' + member.score + ')';
   }
 
   function participateMember(memberId) {
