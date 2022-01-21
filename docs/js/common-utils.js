@@ -73,3 +73,25 @@ function getDateFormatString(date) {
 function findPerfectMember(name) {
   return perfectMembers.find(member => member.name === name)
 }
+
+function toMapFromLocalStorage(str) {
+  return new Map(JSON.parse(str))
+}
+
+function toObjectFromLocalStorage(str) {
+  return JSON.parse(str)
+}
+
+function toStringFromMap(map) {
+  return JSON.stringify(Array.from( map.entries()));
+}
+
+function toStorageObject(map) {
+  const object = { }
+
+  object.expiredTime = new Date()
+  object.expiredTime.setMinutes(new Date().getMinutes() + 30)
+  object.entries = Array.from( map.entries())
+
+  return JSON.stringify(object);
+}

@@ -113,14 +113,14 @@
   const memberList = []
   let memberViewList = []
   let groups = []
-  const participantMap = new Map();
+  let participantMap = new Map();
   const topSeedScore = 180
 
   function initialize() {
     initializeMember();
   }
 
-  async function initializeMember() {
+  async function initializeMember(key) {
 
     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/average?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
@@ -141,7 +141,26 @@
       memberList.push(member)
       memberViewList.push(member)
     }
+
+    initializeParticipantList()
     initializeMemberView()
+  }
+
+  function initializeParticipantList() {
+    const participantObjectString = localStorage.getItem("participantObject")
+
+    if (participantObjectString !== null && participantObjectString !== undefined && participantObjectString !== '') {
+
+      const participantObject = toObjectFromLocalStorage(participantObjectString);
+      const expiredTime = new Date(participantObject.expiredTime);
+
+      if (expiredTime.getTime() < new Date().getTime()) {
+        localStorage.removeItem('participantObject')
+        return
+      }
+
+      participantMap = new Map(participantObject.entries)
+    }
   }
 
   function getNohyooKingValue(name) {
@@ -183,6 +202,8 @@
       }
       index++
     }
+
+    updateParticipantView()
   }
 
   function getMemberButtonString(member) {
@@ -215,6 +236,8 @@
   }
 
   function updateParticipantView() {
+    localStorage.setItem("participantObject", toStorageObject(participantMap));
+
     const participantDiv = document.getElementById("participant-div");
     const participantCountDiv = document.getElementById("participant-count-span");
 
