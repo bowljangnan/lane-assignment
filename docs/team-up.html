@@ -70,6 +70,11 @@
             <option value="7">7개 팀 으로 나누기</option>
             <option value="8">8개 팀 으로 나누기</option>
         </select>
+        <select id="handicap-type-select"
+                style="width:300px;height:80px;font-size:25px;align-content: center; margin-left: 30px">
+            <option selected value=1>핸디 기준: 티어</option>
+            <option value=2>핸디 기준: 에버리지</option>
+        </select>
     </span><br><br>
     <button class="w-btn-outline w-btn-blue-outline" style="padding-left: 50px; width:300px;height:70px;font-size:20px;"
             onclick="divideTeam()">팀 나누기 실행
@@ -279,8 +284,20 @@
         group.push(participant)
       }
 
-      calculateHandicapByTier(group)
-        .then(() => groups.push(group))
+      const handicapOptionSelect = document.getElementById('handicap-type-select');
+      const handicapOption =
+        parseInt(handicapOptionSelect.options[handicapOptionSelect.selectedIndex].value);
+
+      let calculatePromise;
+      if (handicapOption === 1) {
+        calculatePromise = calculateHandicapByTier(group)
+      }
+
+      if (handicapOption === 2) {
+        calculatePromise = calculateHandicapByAverage(group)
+      }
+
+      calculatePromise.then(() => groups.push(group))
         .then(() => {
           const groupDiv = document.getElementById("group-div");
           groupDiv.innerHTML = ''
@@ -371,6 +388,19 @@
           participant.handicap = other.handicap
         }
       }
+    })
+
+    return new Promise(function (resolve) {
+      resolve()
+    });
+  }
+
+  function calculateHandicapByAverage(group) {
+    // 핸디 조정
+    const highestScoreMember = getHighestScoreMemberInGroup(group)
+
+    group.map(participant => {
+      participant.handicap = floorNaturalNumber(highestScoreMember.score) - floorNaturalNumber(participant.score)
     })
 
     return new Promise(function (resolve) {

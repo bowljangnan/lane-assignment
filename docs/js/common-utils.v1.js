@@ -96,4 +96,7 @@ function toStorageObject(map) {
   return JSON.stringify(object);
 }
 
+function floorNaturalNumber(number) {
+  return parseInt(Math.floor(number / 10) * 10)
+}
 
