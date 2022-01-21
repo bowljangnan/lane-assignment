@@ -95,3 +95,5 @@ function toStorageObject(map) {
 
   return JSON.stringify(object);
 }
+
+
