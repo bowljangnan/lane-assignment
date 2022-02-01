@@ -661,15 +661,26 @@
         - member1.participationScore)
       .slice(0, 10)
 
+    if (top10.length === 0) {
+      return
+    }
+
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].participationScore
+
     for (const member of top10) {
       const row = document.getElementById("participation-score-top" + index);
+
+      if (currentValue !== member.participationScore) {
+        rank += 1
+      }
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '</td>'
       row.innerHTML += '<td>' + member.participationScore + '</td>'
-
       index += 1
+      currentValue = member.participationScore
     }
   }
 
@@ -677,21 +688,32 @@
     const top10 = memberList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].gameCount !== ''
-      && member.monthlyData[monthlyIndex].gameCount != 0)
+      && isValidNumber(member.monthlyData[monthlyIndex].gameCount))
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].gameCount
         - member1.monthlyData[monthlyIndex].gameCount)
       .slice(0, 10)
 
+    if (top10.length === 0) {
+      return
+    }
+
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].monthlyData[monthlyIndex].gameCount
+
     for (const member of top10) {
+      if (currentValue !== member.monthlyData[monthlyIndex].gameCount) {
+        rank += 1
+      }
+
       const row = document.getElementById("game-count-top" + index);
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].gameCount + '</td>'
 
       index += 1
+      currentValue = member.monthlyData[monthlyIndex].gameCount
     }
   }
 
@@ -699,21 +721,32 @@
     const top10 = memberList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount != 0)
+      && isValidNumber(member.monthlyData[monthlyIndex].participationCount))
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].participationCount
         - member1.monthlyData[monthlyIndex].participationCount)
       .slice(0, 10)
 
+    if (top10.length === 0) {
+      return
+    }
+
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].monthlyData[monthlyIndex].participationCount
+
     for (const member of top10) {
+      if (currentValue !== member.monthlyData[monthlyIndex].participationCount) {
+        rank += 1
+      }
+
       const row = document.getElementById("participation-top" + index);
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].participationCount + '</td>'
 
       index += 1
+      currentValue = member.monthlyData[monthlyIndex].participationCount
     }
   }
 
@@ -722,22 +755,33 @@
     const top10 = memberList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount != 0
+      && isValidNumber(member.monthlyData[monthlyIndex].participationCount)
       && member.monthlyData[monthlyIndex].gameCount >= 10)
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].average
         - member1.monthlyData[monthlyIndex].average)
       .slice(0, 10)
 
+    if (top10.length === 0) {
+      return
+    }
+
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].monthlyData[monthlyIndex].average
+
     for (const member of top10) {
+      if (currentValue !== member.monthlyData[monthlyIndex].average) {
+        rank += 1
+      }
+
       const row = document.getElementById("average-top" + index);
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '(' + member.monthlyData[monthlyIndex].gameCount + ')</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].average + '</td>'
 
       index += 1
+      currentValue = member.monthlyData[monthlyIndex].average
     }
   }
 
@@ -746,22 +790,33 @@
     const top10 = womansList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount != 0
+      && isValidNumber(member.monthlyData[monthlyIndex].participationCount)
       && member.monthlyData[monthlyIndex].gameCount >= 10)
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].average
         - member1.monthlyData[monthlyIndex].average)
       .slice(0, 10)
 
+    if (top10.length === 0) {
+      return
+    }
+
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].monthlyData[monthlyIndex].average
+
     for (const member of top10) {
+      if (currentValue !== member.monthlyData[monthlyIndex].average) {
+        rank += 1
+      }
+
       const row = document.getElementById("womans-average-top" + index);
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '(' + member.monthlyData[monthlyIndex].gameCount + ')</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].average + '</td>'
 
       index += 1
+      currentValue = member.monthlyData[monthlyIndex].average
     }
   }
 
@@ -770,21 +825,32 @@
     const top10 = memberList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount != 0)
+      && isValidNumber(member.monthlyData[monthlyIndex].participationCount))
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].highscore
         - member1.monthlyData[monthlyIndex].highscore)
       .slice(0, 10)
+    if (top10.length === 0) {
+      return
+    }
+
 
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].monthlyData[monthlyIndex].highscore
+
     for (const member of top10) {
+      if (currentValue !== member.monthlyData[monthlyIndex].highscore) {
+        rank += 1
+      }
+
       const row = document.getElementById("highscore-top" + index);
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].highscore + '</td>'
 
       index += 1
+      currentValue = member.monthlyData[monthlyIndex].highscore
     }
   }
 
@@ -793,27 +859,42 @@
     const top10 = womansList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount != 0)
+      && isValidNumber(member.monthlyData[monthlyIndex].participationCount))
       .sort((member1, member2) => member2.monthlyData[monthlyIndex].highscore
         - member1.monthlyData[monthlyIndex].highscore)
       .slice(0, 10)
 
+    if (top10.length === 0) {
+      return
+    }
+
     let index = 1
+    let rank = 1
+    let currentValue = top10[0].monthlyData[monthlyIndex].highscore
+
     for (const member of top10) {
+      if (currentValue !== member.monthlyData[monthlyIndex].highscore) {
+        rank += 1
+      }
+
       const row = document.getElementById("womans-highscore-top" + index);
       row.innerHTML = ''
-      row.innerHTML += '<td>' + getRankString(index) + '</td>'
+      row.innerHTML += '<td>' + getRankString(rank) + '</td>'
       row.innerHTML += '<td>' + getNameTag(member.name) + '</td>'
       row.innerHTML += '<td>' + member.monthlyData[monthlyIndex].highscore + '</td>'
 
       index += 1
+      currentValue = member.monthlyData[monthlyIndex].highscore
     }
   }
 
   async function initializePerfect() {
     let perfectMembers = await getPerfectMembers()
     initializePerfectView(perfectMembers)
+  }
+
+  function isValidNumber(number) {
+    return !isNaN(number) && number !== 0
   }
 
   function initializePerfectView(perfectMembers) {
@@ -828,8 +909,8 @@
     const filteredList = memberList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].gameCount !== ''
-      && member.monthlyData[monthlyIndex].gameCount != 0)
+      && !isNaN(member.monthlyData[monthlyIndex].gameCount)
+      && member.monthlyData[monthlyIndex].gameCount !== 0)
 
     let totalCount = 0;
     if (filteredList.length !== 0) {
@@ -845,7 +926,7 @@
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
       && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount != 0)
+      && member.monthlyData[monthlyIndex].participationCount !== 0)
 
     document.getElementById("total-participant-count-div").innerHTML = filteredList.length;
   }
