@@ -615,10 +615,10 @@
       const monthlyData = []
       for (let valueIndex = 2; valueIndex < values[index].length; valueIndex += 5) {
         const data = {}
-        data.participationCount = values[index][valueIndex]
-        data.gameCount = values[index][valueIndex + 1]
-        data.average = parseFloat(values[index][valueIndex + 2]).toFixed(1)
-        data.highscore = values[index][valueIndex + 3]
+        data.participationCount = parseInt(values[index][valueIndex])
+        data.gameCount = parseInt(values[index][valueIndex + 1])
+        data.average = parseFloat(values[index][valueIndex + 2])
+        data.highscore = parseInt(values[index][valueIndex + 3])
 
         monthlyData.push(data)
       }
@@ -882,7 +882,7 @@
     let totalCount = 0;
     let totalScore = 0;
     for (let i = 0; i < monthlyData.length-1; i++) {
-      if (monthlyData[i].gameCount == 0) {
+      if (monthlyData[i].gameCount === 0 || isNaN(monthlyData[i].gameCount)) {
         continue
       }
       totalScore += monthlyData[i].average * monthlyData[i].gameCount
