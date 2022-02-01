@@ -617,7 +617,7 @@
         const data = {}
         data.participationCount = parseInt(values[index][valueIndex])
         data.gameCount = parseInt(values[index][valueIndex + 1])
-        data.average = parseFloat(values[index][valueIndex + 2])
+        data.average = parseFloat(values[index][valueIndex + 2]).toFixed(2)
         data.highscore = parseInt(values[index][valueIndex + 3])
 
         monthlyData.push(data)
@@ -889,7 +889,7 @@
       totalCount += monthlyData[i].gameCount
     }
 
-    return (totalScore / totalCount).toFixed(1)
+    return (totalScore / totalCount).toFixed(2)
   }
 
 </script>
