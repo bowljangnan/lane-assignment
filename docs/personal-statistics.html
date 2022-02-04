@@ -170,11 +170,14 @@
 
   async function initializeMemberStatistics() {
 
-    const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+    const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-sheets?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
     await fetch(spreadSheetMetaUrl, null)
       .then((response) => response.json())
-      .then((data) => initializeNewWeeklyRecords(data["sheets"]))
+      .then((data) => {
+        const sheetNames = data["values"].map((values) => values[0])
+        initializeNewWeeklyRecords(sheetNames)
+      })
   }
 
   function disableUnrecordUserButton() {
@@ -204,14 +207,13 @@
     }
   }
 
-  async function initializeNewWeeklyRecords(weeklySheetDatas) {
+  async function initializeNewWeeklyRecords(sheetNames) {
     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-data?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
-    const weeklySheets = weeklySheetDatas.map((weeklySheetData => weeklySheetData['properties']['title']))
     await fetch(spreadSheetUrl, null)
       .then((response) => response.json())
       .then((data) => {
-        initializeNewMemberStatisticsMap(weeklySheets, data["values"])
+          initializeNewMemberStatisticsMap(sheetNames, data["values"])
         }
       ).catch((error) => console.log("error:", error));
   }
@@ -226,7 +228,7 @@
       const sheetName = values[index][0]
 
       if (weeklySheetDatas.includes(sheetName)) {
-        const weeklyValues = values.slice(index+1, index+200)
+        const weeklyValues = values.slice(index + 1, index + 200)
         await initializeMemberStatisticsMap(sheetName, weeklyValues)
       }
     }

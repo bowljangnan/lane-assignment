@@ -4,7 +4,6 @@ function getPerfectMembers() {
   return fetch(spreadSheetUrl, null)
     .then((response) => response.json())
     .then((datas) => {
-      console.log(datas.values)
       const perfectMembers = []
 
       if (datas.values === undefined || datas.values.length === 0) {
