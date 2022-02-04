@@ -565,19 +565,20 @@
   const memberList = []
   const womansList = []
 
-  function initialize() {
+  async function initialize() {
     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/total?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
     const month = new Date().getMonth()
     document.getElementById("month-select")[month + 1].selected = true
 
-    fetch(spreadSheetUrl, null)
+    await fetch(spreadSheetUrl, null)
       .then((response) => response.json())
       .then((data) => initializeMemberList(data["values"]))
-      .then(() => initializeRankView(month))
-      .then(() => initializePerfect())
-      .then(() => initializeParticipationScoreData())
       .catch((error) => console.log("error:", error))
+
+    await initializeParticipationScoreData()
+    await initializePerfect()
+    await initializeRankView(month)
   }
 
   function initializeParticipationScoreData() {
@@ -640,20 +641,20 @@
     initializeRankView(month)
   }
 
-  function initializeRankView(month) {
-    initializeTable();
+  async function initializeRankView(month) {
+    await initializeTable();
 
-    initializeTotalGameCount(month);
-    initializeParticipantCount(month);
-    initializeGameCountRank(month)
-    initializeParticipationCountRank(month)
-    initializeParticipationCountRank(month)
-    initializeAverageRank(month)
+    await initializeTotalGameCount(month);
+    await initializeParticipantCount(month);
+    await initializeGameCountRank(month)
+    await initializeParticipationCountRank(month)
+    await initializeParticipationCountRank(month)
+    await initializeAverageRank(month)
 
-    initializeWomansAverageRank(month)
+    await initializeWomansAverageRank(month)
 
-    initializeHighScoreRank(month)
-    initializeWomansHighScoreRank(month)
+    await initializeHighScoreRank(month)
+    await initializeWomansHighScoreRank(month)
   }
 
   function initializeParticipationScoreView(participantList) {
