@@ -106,8 +106,8 @@
 
   const userButtonPrefix = 'user_button_'
 
-  function initialize() {
-    initializeMember();
+  async function initialize() {
+    await initializeMember();
   }
 
   async function initializeMember() {
@@ -116,7 +116,7 @@
 
     perfectMembers = await getPerfectMembers()
 
-    fetch(spreadSheetUrl, null)
+    await fetch(spreadSheetUrl, null)
       .then((response) => response.json())
       .then((data) => initializeMemberMap(data["values"]))
       .then(() => {
@@ -124,26 +124,18 @@
       })
       .catch((error) => console.log("error:", error))
 
-    return new Promise(function (resolve) {
-      resolve()
-    });
   }
 
-  function initializeMemberMap(values) {
+  async function initializeMemberMap(values) {
     for (let index = 0; index < values.length; index++) {
       const member = getMemberObject(values[index], index)
       memberList.push(member)
     }
     memberViewList = memberList.filter(() => true)
-
-    initializeMemberView()
-
-    return new Promise(function (resolve) {
-      resolve()
-    });
+    await initializeMemberView()
   }
 
-  function initializeMemberView() {
+  async function initializeMemberView() {
 
     const searchInput = document.getElementById("search-input");
 
@@ -172,23 +164,25 @@
       }
       index++
     }
-    disableUnrecordUserButton()
 
-    return new Promise(function (resolve) {
-      resolve()
-    });
+    await disableUnrecordUserButton()
   }
 
-  function initializeMemberStatistics() {
+  async function initializeMemberStatistics() {
 
     const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
-    fetch(spreadSheetMetaUrl, null)
-      .then((response) => response.json())
-      .then((data) => initializeWeeklyRecords(data["sheets"]))
 
-    return new Promise(function (resolve) {
-      resolve()
-    });
+    await fetch(spreadSheetMetaUrl, null)
+      .then((response) => response.json())
+      .then((data) => initializeNewWeeklyRecords(data["sheets"]))
+
+    await disableUnrecordUserButton()
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = convertName(urlParams.get('name'));
+    if (name !== null) {
+      await showStatistics(name)
+    }
   }
 
   function disableUnrecordUserButton() {
@@ -199,36 +193,55 @@
         document.getElementById(userButtonPrefix + member.name).className = getButtonClass(member)
       }
     }
-
-    return new Promise(function (resolve) {
-      resolve()
-    });
   }
 
-  function initializeWeeklyRecords(weeklySheetDatas) {
-    let count = 0;
-
+  async function initializeWeeklyRecords(weeklySheetDatas) {
     for (const weeklySheet of weeklySheetDatas) {
 
       const sheetName = weeklySheet['properties']['title']
 
       const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
-      fetch(spreadSheetUrl, null)
+      await fetch(spreadSheetUrl, null)
         .then((response) => response.json())
-        .then((data) => initializeMemberStatisticsMap(sheetName, data["values"], count, weeklySheetDatas.length))
-        .catch((error) => console.log("error:", error));
+        .then((data) => {
+            initializeMemberStatisticsMap(sheetName, data["values"])
+          }
+        ).catch((error) => console.log("error:", error));
 
-      count++;
     }
-
-    return new Promise(function (resolve) {
-      resolve()
-    });
   }
 
-  function initializeMemberStatisticsMap(weeklyKey, values, count, until) {
+  async function initializeNewWeeklyRecords(weeklySheetDatas) {
+    const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-data?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+
+    const weeklySheets = weeklySheetDatas.map((weeklySheetData => weeklySheetData['properties']['title']))
+    await fetch(spreadSheetUrl, null)
+      .then((response) => response.json())
+      .then((data) => {
+        initializeNewMemberStatisticsMap(weeklySheets, data["values"])
+        }
+      ).catch((error) => console.log("error:", error));
+  }
+
+  async function initializeNewMemberStatisticsMap(weeklySheetDatas, values) {
+
     if (values === undefined || values.length === 0) {
+      return
+    }
+
+    for (let index = 0; index < values.length; index++) {
+      const sheetName = values[index][0]
+
+      if (weeklySheetDatas.includes(sheetName)) {
+        const weeklyValues = values.slice(index+1, index+200)
+        await initializeMemberStatisticsMap(sheetName, weeklyValues)
+      }
+    }
+  }
+
+  async function initializeMemberStatisticsMap(weeklyKey, values) {
+    if (values === undefined || values.length === 0 || values[0].length === 0) {
       return
     }
 
@@ -274,20 +287,6 @@
 
     members.sort((prev, current) => current.average - prev.average)
     weeklyAverageRank.set(weeklyKey, members)
-
-    disableUnrecordUserButton()
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const name = convertName(urlParams.get('name'));
-    if (count === until) {
-      if (name !== null && memberStatistics.get(name) !== undefined) {
-        showStatistics(name)
-      }
-    }
-
-    return new Promise(function (resolve) {
-      resolve()
-    });
   }
 
   function getMemberButtonString(member) {
@@ -299,7 +298,7 @@
     return member.name;
   }
 
-  function showStatistics(name) {
+  async function showStatistics(name) {
     gtag('event', '개인 기록 조회 - ' + name, {'event_category': name, 'event_label': name})
 
     if (currentSelectedButton !== undefined) {
@@ -378,7 +377,7 @@
     newRow.insertCell(5).innerHTML = "<span style='color:red'><b>" + totalStatistics.min + "</b></span>"
     newRow.insertCell(6).innerHTML = "<span style='color:red'><b>" + (totalStatistics.count * 4100).toLocaleString() + "원</b></span>"
 
-    drawChart(name)
+    await drawChart(name)
   }
 
   function getWeeklyRank(weeklyKey, name) {
