@@ -175,14 +175,6 @@
     await fetch(spreadSheetMetaUrl, null)
       .then((response) => response.json())
       .then((data) => initializeNewWeeklyRecords(data["sheets"]))
-
-    await disableUnrecordUserButton()
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const name = convertName(urlParams.get('name'));
-    if (name !== null) {
-      await showStatistics(name)
-    }
   }
 
   function disableUnrecordUserButton() {
@@ -237,6 +229,14 @@
         const weeklyValues = values.slice(index+1, index+200)
         await initializeMemberStatisticsMap(sheetName, weeklyValues)
       }
+    }
+
+    await disableUnrecordUserButton()
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = convertName(urlParams.get('name'));
+    if (name !== null) {
+      await showStatistics(name)
     }
   }
 
