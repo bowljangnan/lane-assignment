@@ -599,6 +599,11 @@
       let name = values[index][0]
 
       const member = memberList.find(member => member.name === name)
+
+      if (member === undefined) {
+        continue
+      }
+
       member.participationScore = parseInt(values[index][1])
 
       participantList.push(member)
