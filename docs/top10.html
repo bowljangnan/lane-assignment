@@ -933,8 +933,7 @@
     const filteredList = memberList.filter(member =>
       member.monthlyData !== null
       && member.monthlyData[monthlyIndex] !== undefined
-      && member.monthlyData[monthlyIndex].participationCount !== ''
-      && member.monthlyData[monthlyIndex].participationCount !== 0)
+      && isValidNumber(member.monthlyData[monthlyIndex].participationCount))
 
     document.getElementById("total-participant-count-div").innerHTML = filteredList.length;
   }
