@@ -303,6 +303,8 @@
   async function showStatistics(name) {
     gtag('event', '개인 기록 조회 - ' + name, {'event_category': name, 'event_label': name})
 
+    console.log(name + ' vs ' + getRival(name))
+
     if (currentSelectedButton !== undefined) {
       const member = memberList.find((member) => member.name === currentSelectedButton.name)
       currentSelectedButton.disabled = false
@@ -962,8 +964,14 @@
     const array = [];
 
     let prevAverage = 0
+    let member = memberStatistics.get(name)
+
+    if (member === undefined) {
+      return array
+    }
+
     for (const weeklySheet of weeklySheets) {
-      const scores = memberStatistics.get(name).get(weeklySheet)
+      const scores = member.get(weeklySheet)
       if (scores === undefined) {
         continue
       }
@@ -971,7 +979,7 @@
     }
 
     for (const weeklySheet of weeklySheets) {
-      const scores = memberStatistics.get(name).get(weeklySheet)
+      const scores = member.get(weeklySheet)
       if (scores === undefined) {
         array.push(prevAverage)
       } else {
@@ -1071,6 +1079,89 @@
 
   function convertName(name) {
     return name === '노유한' ? '노유한' : name
+  }
+
+  function getRival(name) {
+    let rival
+    let maxSimilarity = -1
+    for (const other of memberList) {
+      if (other.name === name) {
+        continue
+      }
+
+      let similarity = getAverageSimilarity(name, other.name)
+      if (similarity > maxSimilarity) {
+        maxSimilarity = similarity
+        rival = other.name
+      }
+    }
+
+    console.log(maxSimilarity)
+    return rival
+  }
+
+  function getAverageSimilarity(user1, user2) {
+
+    const user1WeeklyAverages = getWeeklyAverage(user1)
+    const user2WeeklyAverages = getWeeklyAverage(user2)
+
+    return getEuclideanSimilarity(user1WeeklyAverages, user2WeeklyAverages)
+  }
+
+  function getPiersonSimilarity(arrA, arrB) {
+    const averageA = getAverage(arrA)
+    const averageB = getAverage(arrB)
+
+    const nomalizedA = []
+    const nomalizedB = []
+    for (let i = 0; i < arrA.length; i++) {
+      nomalizedA.push(arrA[i] - 150)
+      nomalizedB.push(arrB[i] - 150)
+    }
+
+    let sumOfNomalizedA = 0
+    let sumOfNomalizedB = 0
+    let sumOfProduct = 0
+
+    for (let i = 0; i < nomalizedA.length; i++) {
+      sumOfNomalizedA += nomalizedA[i] * nomalizedA[i]
+      sumOfNomalizedB += nomalizedB[i] * nomalizedB[i]
+      sumOfProduct += nomalizedA[i] * nomalizedB[i]
+    }
+
+    return sumOfProduct / (Math.sqrt(sumOfNomalizedA) * Math.sqrt(sumOfNomalizedB))
+  }
+
+  function getCosineSimilarity(arrA, arrB) {
+    let sumOfNomalizedA = 0
+    let sumOfNomalizedB = 0
+    let sumOfProduct = 0
+
+    for (let i = 0; i < arrA.length; i++) {
+      sumOfNomalizedA += parseInt(arrA[i]) * parseInt(arrA[i])
+      sumOfNomalizedB += parseInt(arrB[i]) * parseInt(arrB[i])
+      sumOfProduct += parseInt(arrA[i]) * parseInt(arrB[i])
+    }
+
+    return sumOfProduct / (Math.sqrt(sumOfNomalizedA) * Math.sqrt(sumOfNomalizedB))
+  }
+
+  function getEuclideanSimilarity(arrA, arrB) {
+    let sumOfDiff = 0
+
+    for (let i = 0; i < arrA.length; i++) {
+      sumOfDiff += Math.pow(parseInt(arrA[i]) - parseInt(arrB[i]), 2)
+    }
+
+    return 1 / (sumOfDiff + 1)
+  }
+
+
+  function getAverage(arr) {
+    if (arr.length === 0) {
+      return 0
+    }
+    return arr.reduce((a, b) => parseInt(a) + parseInt(b)) / arr.length
   }
 
 </script>
