@@ -28,12 +28,13 @@ function getDisabledButtonClass() {
 }
 
 function getButtonClass(member) {
-  if (member.name === '노유한') {
-    return 'w-btn w-btn-nyking w-btn-gra-anim';
+  if (member.isPerfect) {
+
+    return 'w-btn w-btn-gra3 w-btn-gra-anim';
   }
 
-  if (member.isPerfect) {
-    return 'w-btn w-btn-gra3 w-btn-gra-anim';
+  if (member.name === '노유한') {
+    return 'w-btn w-btn-nyking w-btn-gra-anim';
   }
 
   if (member.id === 0) {
