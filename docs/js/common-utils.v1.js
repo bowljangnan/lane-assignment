@@ -1,7 +1,7 @@
 function getMemberObject(value, index) {
   let member = { }
   member.name = value[0]
-  member.score = parseInt(value[1])
+  member.score = parseInt(value[3])
   member.tier = parseInt(value[2])
   member.id = parseInt(index)
   member.handicap = 0
