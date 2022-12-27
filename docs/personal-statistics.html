@@ -689,31 +689,16 @@
     average = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: weeklySheets,
+        labels: getWeeklyLabels(name),
         datasets: [
           {
-            label: '볼장난 전체 에버리지',
-            data: getEntireMemberAverageResult().entireAverage,
-            backgroundColor: colors.totalBackground,
-            borderColor: colors.totalBorder,
-            fill: false,
-            lineTension: 0
-          }, {
             label: name + ' 에버리지',
             data: getWeeklyAverage(name),
             backgroundColor: colors.targetBackground,
             borderColor: colors.targetBorder,
             fill: false,
             lineTension: 0
-          },
-          // {
-          //   label: '볼장난 주간 에버리지 1위',
-          //   data: getEntireMemberAverageResult().maxAverage,
-          //   backgroundColor: colors.topBackground,
-          //   borderColor: colors.topBorder,
-          //   fill: false,
-          //   lineTension: 0
-          // },
+          }
         ]
       },
       options: {
@@ -974,7 +959,6 @@
 
     const array = [];
 
-    let prevAverage = 0
     let member = memberStatistics.get(name)
 
     if (member === undefined) {
@@ -986,22 +970,28 @@
       if (scores === undefined) {
         continue
       }
-      prevAverage = getWeeklyStatistics(scores).average.toFixed(2)
+
+      array.push(getAverage(scores))
     }
+
+    return array;
+  }
+
+  function getWeeklyLabels(name) {
+    const labels = []
+    let member = memberStatistics.get(name)
 
     for (const weeklySheet of weeklySheets) {
       const scores = member.get(weeklySheet)
       if (scores === undefined) {
-        array.push(prevAverage)
-      } else {
-        const currentAverage = getWeeklyStatistics(scores).average.toFixed(2)
-        array.push(currentAverage)
-        prevAverage = currentAverage
+        continue
       }
+
+      labels.push(weeklySheet)
     }
 
+    return labels
 
-    return array;
   }
 
   function getWeeklyRankData(name) {
