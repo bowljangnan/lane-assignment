@@ -45,19 +45,15 @@ function getButtonClass(member) {
     case 1:
       return 'w-btn w-btn-red'
     case 2:
-      return 'w-btn w-btn-orange'
+      return 'w-btn w-btn-blue'
     case 3:
       return 'w-btn w-btn-dark-yellow'
     case 4:
-      return 'w-btn w-btn-yellow'
+      return 'w-btn w-btn-green'
     case 5:
       return 'w-btn w-btn-dark-blue'
     case 6:
-      return 'w-btn w-btn-blue'
-    case 7:
-      return 'w-btn w-btn-dark-green'
-    case 8:
-      return 'w-btn w-btn-green'
+      return 'w-btn w-btn-dark-blue'
   }
 
   return 'w-btn w-btn-indigo'
