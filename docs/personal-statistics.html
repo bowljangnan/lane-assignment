@@ -70,12 +70,12 @@
 <div id="statistics-div" style="width: 1040px">
     <table id="weekly-statistics-table" style="width:1000px;font-size: 20px">
         <thead>
-        <td><b>2022년 주간</b></td>
+        <td><b>날짜</b></td>
         <td><b>게임 수</b></td>
         <td><b>에버리지</b></td>
-        <td><b>에버리지 순위</b></td>
-        <td><b>최고 점수</b></td>
-        <td><b>최저 점수</b></td>
+        <td><b>당일 순위</b></td>
+        <td><b>당일 최고 점수</b></td>
+        <td><b>당일 최저 점수</b></td>
         <td><b>게임비</b></td>
         </thead>
     </table>
@@ -168,16 +168,21 @@
     await disableUnrecordUserButton()
   }
 
+  // async function initializeMemberStatistics() {
+  //
+  //   const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-sheets?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+  //
+  //   await fetch(spreadSheetMetaUrl, null)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const sheetNames = data["values"].map((values) => values[0])
+  //       initializeNewWeeklyRecords(sheetNames)
+  //     })
+  // }
+
   async function initializeMemberStatistics() {
-
-    const spreadSheetMetaUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-sheets?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
-
-    await fetch(spreadSheetMetaUrl, null)
-      .then((response) => response.json())
-      .then((data) => {
-        const sheetNames = data["values"].map((values) => values[0])
-        initializeNewWeeklyRecords(sheetNames)
-      })
+    await initializeWeeklyRecords()
+    console.log(memberStatistics)
   }
 
   function disableUnrecordUserButton() {
@@ -190,22 +195,22 @@
     }
   }
 
-  async function initializeWeeklyRecords(weeklySheetDatas) {
-    for (const weeklySheet of weeklySheetDatas) {
-
-      const sheetName = weeklySheet['properties']['title']
-
-      const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
-
-      await fetch(spreadSheetUrl, null)
-        .then((response) => response.json())
-        .then((data) => {
-            initializeMemberStatisticsMap(sheetName, data["values"])
-          }
-        ).catch((error) => console.log("error:", error));
-
-    }
-  }
+  // async function initializeWeeklyRecords(weeklySheetDatas) {
+  //   for (const weeklySheet of weeklySheetDatas) {
+  //
+  //     const sheetName = weeklySheet['properties']['title']
+  //
+  //     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1RDT4sZx74q2RUPNOhjg3QF2ynJneUMbg6leHteeHTMw/values/' + sheetName + '?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
+  //
+  //     await fetch(spreadSheetUrl, null)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //           initializeMemberStatisticsMap(sheetName, data["values"])
+  //         }
+  //       ).catch((error) => console.log("error:", error));
+  //
+  //   }
+  // }
 
   async function initializeNewWeeklyRecords(sheetNames) {
     const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-data?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
@@ -218,20 +223,23 @@
       ).catch((error) => console.log("error:", error));
   }
 
-  async function initializeNewMemberStatisticsMap(weeklySheetDatas, values) {
+  async function initializeWeeklyRecords() {
+    const spreadSheetUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Vh6MyPi5RFYFgmqBa7L6t3Krra2-wXaULc_5XEWoAAY/values/weekly-records?key=AIzaSyC7Sh_mpcpjyEcnowiGHiwfM8PZbwWHtAY'
 
+    await fetch(spreadSheetUrl, null)
+      .then((response) => response.json())
+      .then((data) => {
+          initializeNewMemberStatisticsMap(data["values"])
+        }
+      ).catch((error) => console.log("error:", error));
+  }
+
+  async function initializeNewMemberStatisticsMap(values) {
     if (values === undefined || values.length === 0) {
       return
     }
 
-    for (let index = 0; index < values.length; index++) {
-      const sheetName = values[index][0]
-
-      if (weeklySheetDatas.includes(sheetName)) {
-        const weeklyValues = values.slice(index + 1, index + 200)
-        await initializeMemberStatisticsMap(sheetName, weeklyValues)
-      }
-    }
+    await initializeMemberStatisticsMap(values)
 
     await disableUnrecordUserButton()
 
@@ -242,16 +250,19 @@
     }
   }
 
-  async function initializeMemberStatisticsMap(weeklyKey, values) {
+  async function initializeMemberStatisticsMap(values) {
     if (values === undefined || values.length === 0 || values[0].length === 0) {
       return
     }
 
-    weeklySheets.push(weeklyKey)
-    weeklySheets.sort()
-
     for (let index = 0; index < values.length; index++) {
-      let name = convertName(values[index][0])
+      let name = values[index][2]
+      let weeklyKey = values[index][0]
+
+      if (!weeklySheets.includes(weeklyKey)) {
+        weeklySheets.push(weeklyKey)
+        weeklySheets.sort()
+      }
 
       if (!memberStatistics.has(name)) {
         memberStatistics.set(name, new Map())
@@ -259,7 +270,7 @@
 
       const userMap = memberStatistics.get(name)
 
-      for (let valueIndex = 1; valueIndex < values[index].length; valueIndex++) {
+      for (let valueIndex = 3; valueIndex < values[index].length; valueIndex++) {
 
         if (!userMap.get(weeklyKey)) {
           userMap.set(weeklyKey, [])
@@ -270,25 +281,34 @@
         if (isNaN(score)) {
           continue;
         }
+
         weeklyRecords.push(parseInt(values[index][valueIndex]))
       }
     }
 
-    const members = []
     for (const key of memberStatistics.keys()) {
-      let member = {}
-      const userWeeklyScores = memberStatistics.get(key).get(weeklyKey)
-      member.average = 0
-      member.name = key
-      if (userWeeklyScores !== undefined && userWeeklyScores.length > 0) {
-        member.average = (userWeeklyScores.reduce((a, b) => a + b) / userWeeklyScores.length).toFixed(2)
+      let weeklyMembers = []
+      let currentWeeklyKey = ""
+      for (const weeklyKey of memberStatistics.get(key).keys()) {
+        let member = {}
+
+        if (weeklyAverageRank.get(weeklyKey) === undefined) {
+          weeklyAverageRank.set(weeklyKey, [])
+          currentWeeklyKey = weeklyKey
+        }
+
+        const userWeeklyScores = memberStatistics.get(key).get(weeklyKey)
+        const weeklyRankList = weeklyAverageRank.get(weeklyKey)
+
+        member.average = 0
+        member.name = key
+        if (userWeeklyScores !== undefined && userWeeklyScores.length > 0) {
+          member.average = (userWeeklyScores.reduce((a, b) => a + b) / userWeeklyScores.length).toFixed(2)
+        }
+        weeklyRankList.push(member)
+        weeklyRankList.sort((prev, current) => current.average - prev.average)
       }
-
-      members.push(member)
     }
-
-    members.sort((prev, current) => current.average - prev.average)
-    weeklyAverageRank.set(weeklyKey, members)
   }
 
   function getMemberButtonString(member) {
@@ -342,21 +362,12 @@
     }
 
     for (const weeklyKey of weeklySheets) {
-      const newRow = statisticsTable.insertRow(teamIndex)
-      newRow.insertCell(0).innerHTML = weeklyKey
-
       const scores = weeklyMap.get(weeklyKey)
-
       if (scores === undefined) {
-        newRow.insertCell(1).innerHTML = 0
-        newRow.insertCell(2).innerHTML = 0
-        newRow.insertCell(3).innerHTML = '-'
-        newRow.insertCell(4).innerHTML = 0
-        newRow.insertCell(5).innerHTML = 0
-        newRow.insertCell(6).innerHTML = "0원"
-        teamIndex++
         continue
       }
+      const newRow = statisticsTable.insertRow(teamIndex)
+      newRow.insertCell(0).innerHTML = weeklyKey
 
       let statistics = getWeeklyStatistics(scores)
       newRow.insertCell(1).innerHTML = statistics.gameCount
@@ -490,13 +501,13 @@
 
     chartDiv.innerHTML = ''
     chartDiv.innerHTML += '<canvas id="score-distribution-chart"></canvas><br><br>'
-    chartDiv.innerHTML += '<canvas id="participation-chart"></canvas><br><br>'
+    // chartDiv.innerHTML += '<canvas id="participation-chart"></canvas><br><br>'
     chartDiv.innerHTML += '<canvas id="average-chart"></canvas><br>'
     chartDiv.innerHTML += '<canvas id="rank-chart"></canvas><br>'
     chartDiv.innerHTML += '<canvas id="all-member-score-distribution-chart"></canvas><br>'
 
     drawScoreDistributionChart(name)
-    drawParticipationChart(name)
+    // drawParticipationChart(name)
     drawAverageChart(name)
     drawRankChart(name)
     drawAllMemberScoreDistributionChart(name)
